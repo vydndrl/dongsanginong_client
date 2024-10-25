@@ -245,7 +245,7 @@ export default {
             const res = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth/for-sale/${this.farmList[i].id}`);
 
             console.log(res);
-            const packages = res.data.slice(0, 10);
+            const packages = res.data.content.slice(0, 10);
 
             this.farmList[i] = { ...this.farmList[i], "packages": packages };
         }
@@ -341,7 +341,7 @@ export default {
             // Fetch packages
             for (let i = 0; i < this.farmList.length; i++) {
                 const res = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth/for-sale/${this.farmList[i].id}`);
-                const packages = res.data.slice(0, 10);
+                const packages = res.data.content.slice(0, 10);
                 this.farmList[i] = { ...this.farmList[i], "packages": packages };
             }
         }, 300),
@@ -395,7 +395,7 @@ export default {
                     const res = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth/for-sale/${this.farmList[i].id}`);
 
                     console.log(res);
-                    const packages = res.data.slice(0, 10);
+                    const packages = res.data.content.slice(0, 10);
 
                     this.farmList[i] = { ...this.farmList[i], "packages": packages };
                 }
