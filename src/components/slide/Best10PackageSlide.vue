@@ -19,8 +19,14 @@
                             class="heart-icon"></svg-icon>
                         <span style="font-size: 14px;">{{ wishlistItems[item.id] ? '위시리스트 취소' : '위시리스트 담기' }}</span>
                     </v-btn>
+
+                    <div style="margin-top: 10px; margin-bottom: -10px;">
+                        <span style="font-size: medium; color: black;" v-if="item.packageName.length > 10"> {{
+                        item.packageName.substring(0, 10)
+                    }}... </span>
+                    <span style="font-size: medium; color: black;" v-else> {{ item.packageName }}</span>
+                    </div>
                     <div class="item-info" v-if="item.discountId != null && item.discountActive == true">
-                        <p style="font-size: medium; color: black;">{{ item.packageName }}</p>
                         <p style="text-decoration: line-through; color: #999; font-size: 14px;">{{ getAmountWithFormat(item.price) }}원</p>
                         <div style="margin-bottom: 2px;">
                             <span style="color: green;">{{ getAmountWithFormat(item.price - item.discount) }}원&nbsp;&nbsp;</span>
@@ -33,7 +39,6 @@
                         </p>
                     </div>
                     <div class="item-info" v-else>
-                        <p style="font-size: medium; color: black;">{{ item.packageName }}</p>
                         <p>{{ getAmountWithFormat(item.price) }}원</p>
                         <span style="color:#999; font-size: small;"> 1회 제공 금액 {{
                             getAmountWithFormat(getPerCyclePrice(item.price, item.deliveryCycle)) }} </span>

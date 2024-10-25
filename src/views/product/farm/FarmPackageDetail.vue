@@ -18,7 +18,7 @@
       <v-col cols="12" md="6" class="right-content" style="padding-left: 3%;">
         <v-card flat>
           <div v-if="packageProduct.discountId != null && packageProduct.discountActive == true">
-            <v-card-title class="product-title">
+            <v-card-title class="product-title" style="white-space: normal;">
               {{ packageProduct.packageName }} - [배송주기] {{ packageProduct.deliveryCycle }}일
               <span class="sale-style">SALE</span>
             </v-card-title>
@@ -33,7 +33,7 @@
           </div>
 
           <div v-else>
-            <v-card-title class="product-title">
+            <v-card-title class="product-title" style="white-space: normal;">
               {{ packageProduct.packageName }} - [배송주기] {{ packageProduct.deliveryCycle }}일
             </v-card-title>
             <v-card-subtitle>
@@ -257,7 +257,7 @@ export default {
         `${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth/detail/${packageId}`
       );
       const productData = productResponse.data;
-      console.log(">>>>id: " + productData.discountId + "  >>>>discount: " + productData.discount);
+      console.log(">>>>id: " + productData.discountId + "  >>>>discount: " + productData.discount + ">>>> name: " + productData.packageName);
 
       // delivery_cycle -> deliveryCycle로 변환
       this.packageProduct = {
