@@ -667,17 +667,19 @@ export default {
 
 .coupon-register-box {
   position: absolute;
-  top: 60px;
-  right: 20px;
-  width: 420px;
-  height: 60px;
-  padding: 15px;
+  top: 10%;
+  right: 5%;
+  width: 27vw;
+  padding: 2vh 2vw;
   background-color: white;
-  border: 2px solid white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  border: 0.5px solid white;
+  border-radius: 1vw;
+  box-shadow: 0 0.5vh 1vh rgba(0,0,0,0.2);
   z-index: 999;
-  transform-origin: top right; /* 애니메이션 시작점 설정 */
+  transform-origin: top right;
+  box-sizing: border-box;
+  max-width: 90vw; 
+  max-height: 90vh;
 }
 
 .coupon-register-box:hover {
