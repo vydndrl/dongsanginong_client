@@ -12,6 +12,7 @@ import FarmNoticeSellerDetail from "@/views/product/seller/FarmNoticeSellerDetai
 import SellerReviewList from "@/views/product/seller/SellerReviewList.vue"
 import SellerReviewDetail from"@/views/product/seller/SellerReviewDetail.vue"
 import SellerPasswordUpdate from "@/views/product/seller/SellerPasswordUpdate.vue"
+import SellerDiscountManagement from "@/views/product/seller/SellerDiscountManagement.vue"
 
 export const sellerRouter = [
 
@@ -84,5 +85,10 @@ export const sellerRouter = [
         path: '/seller/password/update',
         name: 'SellerPasswordUpdate',
         component: SellerPasswordUpdate
+    },
+    {
+        path: '/seller/discount/list',
+        name: 'SellerDiscountManagement',
+        component: SellerDiscountManagement
     },
 ]
