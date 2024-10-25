@@ -11,8 +11,8 @@
                 <v-col cols="12" class="text-center">
                     <h2>주문 완료</h2>
                     <p>주문이 완료되었습니다.</p>
-                    <p>주문 번호: 202410140030405</p>
-                    <p>주문 일자: {{this.paidAt}}</p>
+                    <p>주문 번호: {{this.orderNumber}} </p>
+                    <p>주문 일자: {{this.paidAt}} </p>
                 </v-col>
             </v-row>
          </v-container>
@@ -111,6 +111,7 @@ export default {
             packageProduct: "",
             packageProductImageUrl: "",
             paidAt: "",
+            orderNumber: "",
         }
     },
     async created() {
@@ -134,7 +135,7 @@ export default {
             this.totalAmount = receiptRes.data.totalPrice;
             this.paymentMethod = receiptRes.data.paymentMethod;
             this.paidAt = this.getDatetimeWithFormat(receiptRes.data.paidAt);
-            console.log(this.paidAt);
+            this.orderNumber = receiptRes.data.orderNumber;
 
             // 상품 정보 불러오기
             const productId = receiptRes.data.productId;

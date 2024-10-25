@@ -84,16 +84,28 @@
     </v-dialog>
 
     <!-- 구독취소 확인 모달 -->
-    <v-dialog v-model="cancelSub" max-width="300">
-        <v-card class="modal" style="padding: 10px; padding-bottom: 5px;">
-            <v-card-title class="modal-title">정말 취소하시겠습니까?</v-card-title>
-            <v-card-actions class="modal-actions">
-                <v-spacer></v-spacer>
-                <v-btn @click="withdrawSubscribe(selectedSubscriptionId)" class="delete-confirm-btn">확인</v-btn>
-                <v-btn @click="cancelSub = false;" class="cancel-btn">닫기</v-btn>
+    <v-dialog v-model="cancelSub" max-width="570">
+        <v-card style="padding: 20px;">
+            <v-card-title class="modal-title" style="font-size: 20px; font-weight: bold;">
+                정기 구독 패키지 구독 취소
+            </v-card-title>
+            <v-card-text class="modal-text" style="text-align: center;">
+                정기 구독을 해지하면 등록한 회원 정보 및 결제 정보가 모두 삭제됩니다. <br>
+                또한, 구독이 취소되어도 다음 결제일 전까지 <br>
+                정기 배송일에 상품을 받아보실 수 있습니다. <br>
+                그래도 취소하시겠습니까?
+            </v-card-text>
+            <v-card-actions class="modal-actions" style="justify-content: center;">
+                <v-btn @click="withdrawSubscribe(selectedSubscriptionId)" class="delete-confirm-btn">
+                    확인
+                </v-btn>
+                <v-btn @click="cancelSub = false;" class="cancel-btn">
+                    닫기
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
+    
 
     <v-dialog v-model="alertModal" max-width="330px">
         <v-card class="modal" style="padding: 15px; text-align: center; height: 120px; overflow-y: hidden;">
@@ -330,7 +342,7 @@ export default {
   color: black;
   border-radius: 30px;
   padding: 10px 20px;
-  font-size: 13px;
+  font-size: 14px;
   max-width: 200px;
 }
 .cancel-btn {
@@ -338,7 +350,7 @@ export default {
   color: black;
   border-radius: 30px;
   padding: 10px 20px;
-  font-size: 13px;
+  font-size: 14px;
   max-width: 200px;
 }
 </style>
