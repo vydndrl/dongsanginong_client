@@ -292,12 +292,12 @@
 
                     <div class="form-group">
                         <label for="address">주소</label>
-                        <input disabled type="text" id="address" v-model="address" placeholder="도로명 주소를 입력하세요 (ex. 서울시 노원구)"
+                        <input disabled type="text" id="address" v-model="memberAddress" placeholder="도로명 주소를 입력하세요 (ex. 서울시 노원구)"
                             required />
                     </div>
                     <div class="form-group">
                         <label for="address-detail">상세 주소</label>
-                        <input type="text" id="address-detail" v-model="addressDetail" 
+                        <input type="text" id="address-detail" v-model="memberAddressDetail" 
                             placeholder="상세 주소를 입력하세요 (ex. 101호)" required ref="addressDetail" />
                     </div>
 
@@ -416,8 +416,6 @@ export default {
                 zipcode: ''
             },
             zipcode: '',
-            address: '',
-            addressDetail: '',
             alertModal_address: false,
             errorModal: false,
             modalMessage_address: '',
@@ -446,6 +444,7 @@ export default {
             this.member = memberRes.data;
             this.memberAddress = this.member.address;
             this.memberAddressDetail = this.member.addressDetail;
+            this.zipcode = this.member.zipcode;
             this.memberName = this.member.name;
             this.memberPhone = this.member.phone;
 
@@ -492,7 +491,7 @@ export default {
         },
         async onSubmit_address() {
             // 입력값 검증
-            if (!this.zipcode || !this.address || !this.addressDetail) {
+            if (!this.zipcode || !this.memberAddress || !this.memberAddressDetail) {
                 this.modalMessage_address = "모든 주소 정보를 입력해 주세요."; // 에러 메시지 설정
                 this.errorModal = true; // 에러 모달 띄우기
                 return; // 함수 종료
@@ -501,8 +500,8 @@ export default {
             const addressData = {
                 phone: this.memberInfo_address.phone,
                 zipcode: this.zipcode,
-                address: this.address,
-                addressDetail: this.addressDetail
+                address: this.memberAddress,
+                addressDetail: this.memberAddressDetail
             };
 
             try {
@@ -678,7 +677,7 @@ export default {
                 new this.daum.Postcode({
                     oncomplete: (data) => {
                         this.zipcode = data.zonecode;
-                        this.address = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+                        this.memberAddress = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
                         this.$nextTick(() => {
                             this.$refs.addressDetail.focus();
                         });

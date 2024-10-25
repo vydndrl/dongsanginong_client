@@ -52,14 +52,15 @@
                     </v-card-subtitle>
 
                     <!-- 매출 내역 테이블 -->
-                    <v-data-table :search="search">
-                        <thead>
+                     <v-card class="delivery-card" >
+                    <v-table class="table-header">
+                        <thead class="table-header">
                             <tr>
-                                <th>결제 아이디</th>
-                                <th>결제일</th>
-                                <th>패키지 명</th>
-                                <th>구매자 이름</th>
-                                <th>금액</th>
+                                <th class="table-header">결제 아이디</th>
+                                <th class="table-header">결제일</th>
+                                <th class="table-header">패키지 명</th>
+                                <th class="table-header">구매자 이름</th>
+                                <th class="table-header">금액</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,7 +72,8 @@
                                 <td>{{ salesDetail.paidAmount }}</td>
                             </tr>
                         </tbody>
-                    </v-data-table>
+                    </v-table>
+                </v-card>
                 </v-card>
             </v-col>
         </v-row>
@@ -410,5 +412,29 @@ export default {
     width: 1000px;
     /* 캔버스 너비 (컨테이너 너비를 초과하도록 설정) */
     height: 280px;
+}
+
+
+.delivery-card {
+    margin-top: 20px;
+    border: 1px solid #d4d4d4;
+    border-radius: 10px;
+    padding-right: 30px;
+    padding-left: 30px;
+}
+.table-header {
+    text-align: center !important;
+    font-size: 18px;
+    background-color: none;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.delivery-first-col {
+    padding: 10px;
+    padding-left: 70px;
+}
+.delivery-second-col {
+    padding: 10px;
+    padding-left: 70px;
 }
 </style>
