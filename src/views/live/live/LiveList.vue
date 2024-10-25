@@ -129,7 +129,7 @@
 
         <v-dialog v-model="loginConfirmModalVisible" max-width="350px">
           <v-card class="login-modal">
-            <v-card-text style="text-align: center;">로그인이 필요합니다. <br> 로그인 하시겠습니까?</v-card-text>
+            <v-card-text style="text-align: center;">로그인이 필요한 서비스 입니다. <br> 로그인 하시겠습니까?</v-card-text>
             <v-card-actions>
               <v-btn class="login-modal-btn" @click="goToLogin" style="background-color: #BCC07B;">확인</v-btn>
               <v-btn class="login-modal-btn" @click="loginConfirmModalVisible = false" style="background-color: #e0e0e0;">취소</v-btn>
