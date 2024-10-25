@@ -48,7 +48,7 @@
                         매출 내역 확인
                     </v-card-title>
                     <v-card-subtitle>
-                        건수: {{ this.salesData.totalCount }}, 총 매출액: {{ this.salesData.totalAmount }}
+                        건수: {{ this.salesData.totalCount }}, 총 매출액: {{ getAmountWithFormat(this.salesData.totalSalesAmount) }} 원
                     </v-card-subtitle>
 
                     <!-- 매출 내역 테이블 -->
@@ -56,7 +56,7 @@
                     <v-table class="table-header">
                         <thead class="table-header">
                             <tr>
-                                <th class="table-header">결제 아이디</th>
+                                <th class="table-header">주문번호</th>
                                 <th class="table-header">결제일</th>
                                 <th class="table-header">패키지 명</th>
                                 <th class="table-header">구매자 이름</th>
@@ -65,11 +65,11 @@
                         </thead>
                         <tbody>
                             <tr v-for="salesDetail in this.salesList" :key="salesDetail.orderId">
-                                <td>{{ salesDetail.orderId }}</td>
-                                <td>{{ extractYearAndMonthAndDay(salesDetail.paidAt) }}</td>
-                                <td>{{ salesDetail.packageName }}</td>
-                                <td>{{ salesDetail.customerName }}</td>
-                                <td>{{ salesDetail.paidAmount }}</td>
+                                <td  style="font-size: 13px;">{{ salesDetail.orderNumber }}</td>
+                                <td style="font-size: 16px;">{{ extractYearAndMonthAndDay(salesDetail.paidAt) }}</td>
+                                <td style="font-size: 16px;">{{ salesDetail.packageName }}</td>
+                                <td style="font-size: 16px;">{{ salesDetail.customerName }}</td>
+                                <td style="font-size: 16px;">{{ getAmountWithFormat(salesDetail.paidAmount) }}</td>
                             </tr>
                         </tbody>
                     </v-table>
@@ -390,6 +390,18 @@ export default {
                 this.loadMoreData();
             }
         },
+        getAmountWithFormat(amount) {
+            let ret = "";
+            let i = 0;
+            amount = String(amount);
+            for (i = 0; i < amount.length; i++) {
+                ret = String(amount[amount.length - i - 1]) + ret;
+                if (i % 3 == 2 && i != amount.length - 1) {
+                    ret = ',' + ret
+                }
+            }
+            return ret;
+        }
     }
 };
 </script>
