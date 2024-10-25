@@ -415,7 +415,7 @@ export default {
     position: absolute;
     top: -20px;
     /* 필요에 따라 위치 조정 */
-    left: 50%;
+    left: 30%;
     transform: translateX(-50%);
     font-size: 24px;
     opacity: 0;
