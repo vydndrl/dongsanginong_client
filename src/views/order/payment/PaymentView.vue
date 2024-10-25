@@ -74,7 +74,10 @@
                                 <p>{{ memberAddressDetail }}</p>
                             </div>
                             <div style="width: 100%; display: flex; justify-content: right;">
-                                <v-btn class="mt-2" style="border-radius: 50px;">배송지 변경</v-btn>
+                                <v-btn
+                                class="mt-2"
+                                style="border-radius: 50px;"
+                                >배송지 변경</v-btn>
                             </div>
                         </div>
                     </v-card>
@@ -178,7 +181,7 @@
         </v-card>
     </v-dialog>
 
-    <v-dialog v-model="this.couponModal" max-width="300px">
+    <v-dialog v-model="this.couponModal" style="max-width: 300px; max-height: 700px;">
         <v-card class="coupon-select-modal modal" style="align-items: center; padding-bottom: 10px; display: flex;">
             <div style="width: 100%; text-align: center; padding: 20px;">
                 <v-radio-group v-model="this.selectedCoupon" class="mt-4 mb-4">
@@ -329,6 +332,7 @@ export default {
             memberPhone: "",
             logoImage: "",
             confirmPayModal: false,
+            deliveryModal: false,
         }
     },
     async created() {
@@ -367,6 +371,10 @@ export default {
 
             // totalAmount 계산
             this.totalAmount = this.packageProduct.price;
+            
+            // 할인 가격
+            console.log(this.packageProduct);
+            this.discountedPrice = this.packageProduct.discount == undefined ? 0 : this.packageProduct.discount;
         } catch (e) {
             console.log(e);
         }
@@ -507,6 +515,13 @@ export default {
             }
 
             this.confirmPayModal = true;
+        },
+        async changeDeliveryAddress() {
+            // try {
+            //     axios.post(`${process.env.VUE_APP_API_BASE_URL}`)
+            // } catch(e) {
+            //     console.log(e);
+            // }
         }
     },
 
@@ -562,7 +577,6 @@ h3 {
 
 .coupon-select-modal {
     width: 500px;
-    height: 260px;
 }
 
 .payment-info-title {
