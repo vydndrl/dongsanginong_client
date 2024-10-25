@@ -80,8 +80,8 @@
                             <span style="font-size:medium; font-weight: 400;" v-if="pkg.packageName.length > 10"> {{
                                 pkg.packageName.substring(0, 10)
                             }}... </span>
+                            <span style="font-size:medium; font-weight: 400;" v-else> {{ pkg.packageName }}</span>
                             <div class="item-info" v-if="pkg.discountId != null && pkg.discountActive == true">
-                                <p style="font-size: medium; color: black;">{{ pkg.packageName }}</p>
                                 <p style="text-decoration: line-through; color: #999; font-size: 14px;">{{ formatPrice(pkg.price) }}</p>
                                 <div style="margin-bottom: 2px;">
                                     <span style="color:darkgreen; font-size:medium;">{{ formatPrice(pkg.price - pkg.discount) }}&nbsp;&nbsp;</span>
@@ -94,7 +94,6 @@
                                 </p>
                             </div>
                             <div class="item-info" v-else>
-                                <p style="font-size: medium; color: black;">{{ pkg.packageName }}</p>
                                 <p style="color:darkgreen; font-size:medium;">{{ formatPrice(pkg.price) }}</p>
                                 <span style="color:#999; font-size: small;"> 1회 제공 금액 {{
                                     formatPrice(getPerCyclePrice(pkg.price, pkg.deliveryCycle)) }} </span>
@@ -415,7 +414,7 @@ export default {
     position: absolute;
     top: -20px;
     /* 필요에 따라 위치 조정 */
-    left: 50%;
+    left: 30%;
     transform: translateX(-50%);
     font-size: 24px;
     opacity: 0;

@@ -126,7 +126,17 @@
             </v-row>
           </v-container>
         </v-container>
-    
+
+        <v-dialog v-model="loginConfirmModalVisible" max-width="350px">
+          <v-card class="login-modal">
+            <v-card-text style="text-align: center;">로그인이 필요한 서비스 입니다. <br> 로그인 하시겠습니까?</v-card-text>
+            <v-card-actions>
+              <v-btn class="login-modal-btn" @click="goToLogin" style="background-color: #BCC07B;">확인</v-btn>
+              <v-btn class="login-modal-btn" @click="loginConfirmModalVisible = false" style="background-color: #e0e0e0;">취소</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
         <!-- 라이브 시작 모달창 : seller가 title과 썸네일 사진을 추가함 -->
         <v-dialog v-model="startLiveDialog" max-width="500px"  @click:outside="cancelLive">
           <v-card class="live-modal">
@@ -207,9 +217,15 @@ export default {
             currentPage: 0,
             pageSize: 7,
             session: null,
+
+            isLoggedIn: false,
+            loginDialog: false,
+            loginConfirmModalVisible: false,
         };
     },
     async created() {
+        const accessToken = localStorage.getItem('accessToken');
+        this.isLoggedIn = !!accessToken;
         // 즐겨찾기 뿌리기
         const role = localStorage.getItem('role');
         if (role === 'SELLER') {
@@ -424,6 +440,10 @@ export default {
         },
         // 시청자: 기존 세션에 접속
         async joinExistingSession(liveId) {
+          if (!this.isLoggedIn) {
+                this.loginConfirmModalVisible = true;
+                return;
+            }
             console.log("시청자 세션 : ", liveId);
             this.isPublisher = false; // 시청자 설정
             try {
@@ -443,6 +463,10 @@ export default {
             } catch (error) {
                 console.error('세션 ID 가져오기 오류:', error);
             }
+        },
+        goToLogin() {
+            this.loginConfirmModalVisible = false;
+            this.$router.push('/member/sign-in');
         },
         // 목록 뿌려지자마자 1.5초 뒤에 전체 프리뷰 뿌려짐 
         async playPreviewAll() {
@@ -615,5 +639,18 @@ export default {
   border-radius: 50px;
   box-shadow: none;
   width:230px;
+}
+.login-modal {
+  background-color: rgb(255, 255, 255);
+  border: none;
+  box-shadow: none;
+  border-radius: 10px;
+}
+.login-modal-btn {
+  margin-left: 2px;
+  margin-top: -10px;
+  border-radius: 50px;
+  width: 50px;
+  color: black;
 }
 </style>
