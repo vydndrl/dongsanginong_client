@@ -1,7 +1,7 @@
 <template>
     <FarmMenuComponent :currentMenu="1"/>
     <br>
-    <v-container style="max-width: 1200px; padding-left: 180px;">
+    <v-container fluid style="padding-left: 250px;"> 
       <!-- 에러 메시지 출력 -->
       <v-row v-if="errorMessage">
         <v-col>
@@ -25,20 +25,32 @@
           <v-card 
             elevation="0" 
             class="v-card" 
-            style="width: 100%; height: 400px; padding: 0px;"
+            style="width: 100%; height: 470px; padding: 0px;"
             @click="goToPackageDetail(packageProduct.packageId)"
           >
             <v-img
               :src="packageProduct.imageUrl || 'https://your-default-image-url.com/default.png'"
               alt="Package Image"
-              height="300px"
-              width="100%"
+              class="square-image"
               cover
             ></v-img>
             <v-chip
               style="position: absolute; top: 10px; left: 10px; padding: 5px 10px; border-radius: 8px; background-color: rgba(128, 128, 128, 0.9); color: white;">
               {{ packageProduct.deliveryCycle }}일 주기 배송🚚
             </v-chip>
+
+            <!-- 위시리스트 버튼 추가 -->
+            <v-btn style="width: 100%; margin-top:10px; border: 0.5px solid gray; box-shadow: none;"
+                  @click.stop="addToWishList(packageProduct)" v-if="member">
+                <div v-if="wishAnimation.get(packageProduct.packageId)" class="heart-emoji">
+                    <svg-icon type="mdi" :path="mdiHeart" class="icon-colored"></svg-icon>
+                </div>
+                <svg-icon type="mdi" :path="wishlistItems[packageProduct.packageId] ? mdiHeart : mdiHeartOutline"
+                    :style="{ marginRight: '2px', color: wishlistItems[packageProduct.packageId] ? 'red' : 'black' }"
+                    class="heart-icon"></svg-icon>
+                <span style="font-size: 14px;">{{ wishlistItems[packageProduct.packageId] ? '위시리스트 취소' : '위시리스트 담기' }}</span>
+            </v-btn>
+
             <v-card-text style="padding-left: 0px;">
               <span style="font-size:medium; font-weight: 400;" v-if="packageProduct.packageName.length > 10">
                 {{ packageProduct.packageName.substring(0, 10) }}...
@@ -72,12 +84,15 @@
 
 <script>
 import axios from 'axios';
+import SvgIcon from '@jamescoyle/vue-icon';
+import { mdiHeartOutline, mdiHeart } from '@mdi/js';
 import FarmMenuComponent from '@/components/menubar/FarmMenuComponent.vue';
 import { debounce } from 'lodash';
 
 export default {
   components: {
-    FarmMenuComponent
+    FarmMenuComponent,
+    SvgIcon
   },
   data() {
     return {
@@ -88,6 +103,11 @@ export default {
       errorMessage: null,
       isLoading: false,
       isLastPage: false,
+      member: localStorage.getItem("memberId"),
+      wishlistItems: {},
+      mdiHeartOutline: mdiHeartOutline,
+      mdiHeart: mdiHeart,
+      wishAnimation: new Map(),
     };
   },
   mounted() {
@@ -151,6 +171,26 @@ export default {
         this.loadMorePackages();
       }
     }, 200), // 200ms 지연
+    async addToWishList(packageProduct) {
+      try {
+        const memberId = localStorage.getItem('memberId');
+        await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/wishlist/product/${packageProduct.packageId}`, {}, {
+          headers: {
+            myId: memberId,
+          }
+        });
+        this.wishlistItems[packageProduct.packageId] = !this.wishlistItems[packageProduct.packageId];
+        if (this.wishlistItems[packageProduct.packageId]) {
+          // 애니메이션 시작
+          this.wishAnimation.set(packageProduct.packageId, true);
+          setTimeout(() => {
+            this.wishAnimation.set(packageProduct.packageId, false);
+          }, 1000); // 애니메이션 지속 시간 조절 가능
+        }
+      } catch (e) {
+        console.log(e.message);
+      }
+    },
     // 패키지 상세 페이지로 이동하는 메서드
     goToPackageDetail(packageId) {
       this.$router.push({ name: 'FarmPackageDetail', params: { packageId } });
@@ -186,5 +226,48 @@ export default {
 .package-price {
     font-size: 13px;
     color: #8e8e8e;
+}
+
+/* 위시리스트 관련 스타일 */
+.heart-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.icon-colored {
+  color: red;
+}
+
+.heart-emoji {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  opacity: 0;
+  animation: popUp 1s ease-in-out forwards;
+}
+
+@keyframes popUp {
+  0% {
+      opacity: 0;
+      transform: translate(-50%, 0) scale(0);
+  }
+
+  50% {
+      opacity: 1;
+      transform: translate(-50%, -50px) scale(1.5);
+  }
+
+  100% {
+      opacity: 0;
+      transform: translate(-50%, -100px) scale(0);
+  }
+}
+
+.square-image {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* 정사각형 비율 */
+  object-fit: cover;
 }
 </style>
