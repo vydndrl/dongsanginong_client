@@ -51,26 +51,50 @@
                 <span style="font-size: 14px;">{{ wishlistItems[packageProduct.packageId] ? '위시리스트 취소' : '위시리스트 담기' }}</span>
             </v-btn>
 
-            <v-card-text style="padding-left: 0px;">
-              <span style="font-size:medium; font-weight: 400;" v-if="packageProduct.packageName.length > 10">
-                {{ packageProduct.packageName.substring(0, 10) }}...
-              </span>
-              <span style="font-size:medium; font-weight: 400;" v-else>
-              {{ packageProduct.packageName }}
-            </span>
-            <br />
-            <span style="color:darkgreen; font-size:medium;">
-              {{ formatPrice(packageProduct.price) }}
-            </span>
-            <br />
-            <span style="color:#999; font-size: small;">
-              1회 제공 금액 {{ formatPrice(getPerCyclePrice(packageProduct.price, packageProduct.deliveryCycle)) }}
-            </span>
-            <br />
-            <span style="color:#999; font-size: small;">
-              🧾 누적 주문 {{ packageProduct.orderCount }}
-            </span>
-          </v-card-text>
+            <div v-if="packageProduct.discountId != null && packageProduct.discountActive == true">
+              <v-card-text style="padding-left: 0px;">
+                <span style="font-size:medium; font-weight: 400;" v-if="packageProduct.packageName.length > 10">
+                  {{ packageProduct.packageName.substring(0, 10) }}...
+                </span>
+                <span style="font-size:medium; font-weight: 400;" v-else>
+                  {{ packageProduct.packageName }}
+                </span>
+                <br />
+                <p style="text-decoration: line-through; color: #999; font-size: 14px;">{{ formatPrice(packageProduct.price) }}</p>
+                <div style="margin-bottom: 2px;">
+                    <span style="color:darkgreen; font-size:medium;">{{ formatPrice(packageProduct.price - packageProduct.discount) }}&nbsp;&nbsp;</span>
+                    <span class="sale-style">SALE</span>
+                </div>
+                <span style="color:#999; font-size: small;"> 1회 제공 금액 {{
+                    formatPrice(getPerCyclePrice(packageProduct.price - packageProduct.discount, packageProduct.deliveryCycle)) }} </span>
+                <br />
+                <span style="color:#999; font-size: small;">
+                  🧾 누적 주문 {{ packageProduct.orderCount }}
+                </span>
+              </v-card-text>
+            </div>
+            <div v-else>
+              <v-card-text style="padding-left: 0px;">
+                <span style="font-size:medium; font-weight: 400;" v-if="packageProduct.packageName.length > 10">
+                  {{ packageProduct.packageName.substring(0, 10) }}...
+                </span>
+                <span style="font-size:medium; font-weight: 400;" v-else>
+                  {{ packageProduct.packageName }}
+                </span>
+                <br />
+                <span style="color:darkgreen; font-size:medium;">
+                  {{ formatPrice(packageProduct.price) }}
+                </span>
+                <br />
+                <span style="color:#999; font-size: small;">
+                  1회 제공 금액 {{ formatPrice(getPerCyclePrice(packageProduct.price, packageProduct.deliveryCycle)) }}
+                </span>
+                <br />
+                <span style="color:#999; font-size: small;">
+                  🧾 누적 주문 {{ packageProduct.orderCount }}
+                </span>
+              </v-card-text>
+            </div>
         </v-card>
       </v-col>
     </v-row>
@@ -269,5 +293,15 @@ export default {
   width: 100%;
   aspect-ratio: 1 / 1; /* 정사각형 비율 */
   object-fit: cover;
+}
+.sale-style {
+    background-color: rgb(245, 77, 77); 
+    color: white; 
+    padding-right: 7px;
+    padding-left: 7px;
+    padding-bottom: 3px;
+    padding-top: 5px;
+    font-size: 10px;
+    margin-bottom: 10px;
 }
 </style>
