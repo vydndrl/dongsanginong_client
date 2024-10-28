@@ -58,7 +58,7 @@
             <h4 class="left-align" v-if="isEditing">농장 설명을 적어주세요.</h4><br />
             <!-- 수정하기 버튼을 눌렀을 때만 textarea 보이기 -->
             <textarea v-model="farmIntro" class="intro-textarea" v-if="isEditing"></textarea>
-            <h4 v-if="!isEditing" class="left-align">농장 카테고리 선택</h4>
+            <h4 v-if="!isEditing" class="left-align">농장 한 줄 소개</h4>
             <div class="intro-area" v-if="!isEditing">
                 <p v-if="!isEditing">{{ farmIntro }}</p>
             </div>

@@ -161,16 +161,14 @@ export default {
     },
     async created() {
         this.images = [
-            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/Farm/1ec43aec-e12b-41aa-8a7d-9c831914c6ae%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-10-22%20221354.png", "alt": "배너사진3", "link": "/event2" },
-            // { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/Farm/f94275a5-35bc-4c2a-9ac4-4d6c69f2aa90%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-10-22%20233639.png", "alt": "배너사진3", "link": "/event2" },
+            // { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/Farm/1ec43aec-e12b-41aa-8a7d-9c831914c6ae%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-10-22%20221354.png", "alt": "배너사진3", "link": "/event2" },
+            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/farm/3e88ac02-ef09-43f8-903b-e41dcee32eb1banner9", "alt": "배너사진3", "link": "/event2" },
             // { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/Farm/ca7a17bc-0a34-477e-bca5-9f80c539293a%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-10-22%20233941.png", "alt": "배너사진4", "link": "/event2" },
         ];
         // Top 10 패키지 가져오기
         try {
             const topPackagesResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth/top10`);
             this.topPackageList = topPackagesResponse.data;
-            console.log(">>>>> topPackageList : ", this.topPackageList[0].discountId);
-
             // 전체 패키지 리스트 가져오기
             let params = {
                 page: this.currentPage,
@@ -180,7 +178,6 @@ export default {
             }
             const packageListResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth`, { params });
             this.packageList = packageListResponse.data.content;
-            console.log(this.packageList)
             // sortOptionMap 설정
             this.sortOptionMap.set("최신순", "id,desc");
             this.sortOptionMap.set("판매량 순", "orderCount,desc");
