@@ -134,7 +134,6 @@ export default {
         }
         return productName; 
       }
-      return productName;
     },
   },
 };
