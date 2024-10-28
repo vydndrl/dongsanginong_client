@@ -81,6 +81,37 @@
         </div>
       </transition>
 
+      <!-- 이모지 선택 리스트 -->
+      <div v-if="showEmojiPicker" class="emoji-picker" @click.stop ref="emojiPicker">
+        <div 
+          v-for="(emoji, index) in emojiList" 
+          :key="index" 
+          class="emoji-option" 
+          @click="selectEmoji(emoji)"
+        >
+          {{ emoji }}
+        </div>
+      </div>
+
+      <!-- 이모지 애니메이션 컨테이너 -->
+      <div class="heart-container">
+        <transition-group name="heart" tag="div">
+          <div
+            v-for="(heart, index) in hearts"
+            :key="index"
+            class="heart"
+            :style="{
+              top: heart.y + 'px',
+              left: heart.x + 'px',
+              animationDelay: heart.delay + 's',
+              '--deltaX': heart.deltaX + 'px'
+            }"
+          >
+            {{ heart.emoji }}
+          </div>
+        </transition-group>
+      </div>
+
       <div class="message-list" ref="messageList">
         <div
           v-for="(message, index) in filteredMessages"
@@ -107,6 +138,10 @@
           @keyup.enter="sendMessage"
           placeholder="메시지를 입력하세요"
         />
+        <!-- 이모지 버튼 -->
+        <button class="emoji-btn" @click="toggleEmojiPicker" ref="emojiButton">
+          <span>{{ selectedEmoji }}</span>
+        </button>
         <button class="send-btn" @click="sendMessage">
           <i class="mdi mdi-send"></i>
         </button>
@@ -183,6 +218,14 @@ export default {
       selectedCoupon: null,
       showCouponBox: true,
       selectedCouponId: '',
+      
+      // 이모지 관련 데이터
+      selectedEmoji: '❤️',
+      emojiList: ['❤️', '👍', '😂', '🎉', '😎', '🌟', '🔥', '💯'],
+      showEmojiPicker: false,
+      canSendEmoji: true,
+      emojiCooldown: 1000, // 1초 (밀리초 단위)
+      hearts: [],
     };
   },
   async mounted() {
@@ -306,6 +349,13 @@ export default {
               }
             });
           }
+
+          // 이모지 메시지 구독
+          this.stompClient.subscribe(`/topic/live/${this.liveId}/emojis`, (message) => {
+            const emojiMessage = JSON.parse(message.body);
+            console.log('Received Emoji:', emojiMessage);
+            this.addEmoji(emojiMessage);
+          });
         },
         (error) => {
           console.error('WebSocket connection error:', error);
@@ -356,6 +406,35 @@ export default {
 
         this.stompClient.send(`/app/chat/${this.liveId}/sendMessage`, JSON.stringify(message));
         this.chatMessage = '';
+      } else {
+        console.error('WebSocket is not connected yet');
+      }
+    },
+
+    sendEmoji(emoji) {
+      if (!this.canSendEmoji) {
+        return;
+      }
+      if (this.stompClient && this.stompClient.connected) {
+        const emojiMessage = {
+          memberId: this.memberId,
+          sellerId: this.sellerId,
+          sessionId: this.liveId,
+          name: this.senderName,
+          content: '',
+          isOwner: this.isPublisher,
+          type: 'EMOJI',
+          emoji: emoji, // 선택된 이모지 추가
+        };
+
+        this.stompClient.send(`/app/chat/${this.liveId}/sendEmoji`, JSON.stringify(emojiMessage));
+        console.log('Emoji sent:', emojiMessage);
+        this.canSendEmoji = false;
+
+        // 1초 후에 전송 제한 해제
+        setTimeout(() => {
+          this.canSendEmoji = true;
+        }, this.emojiCooldown);
       } else {
         console.error('WebSocket is not connected yet');
       }
@@ -592,16 +671,29 @@ export default {
     },
 
     handleClickOutside(event) {
+      // 이모지 피커 외부 클릭 시 닫기
+      if (this.showEmojiPicker) {
+        const picker = this.$refs.emojiPicker;
+        const emojiButton = this.$refs.emojiButton;
+        if (picker && !picker.contains(event.target) && emojiButton && !emojiButton.contains(event.target)) {
+          this.showEmojiPicker = false;
+        }
+      }
+
+      // 메시지 드롭다운 외부 클릭 시 닫기
       if (this.selectedMessageIndex !== null) {
         const selectedMessageElement = this.$refs.messageList.children[this.selectedMessageIndex];
         if (selectedMessageElement) {
-          const isInsideDropdown = selectedMessageElement.querySelector('.dropdown-menu').contains(event.target);
+          const dropdownMenu = selectedMessageElement.querySelector('.dropdown-menu');
+          const isInsideDropdown = dropdownMenu && dropdownMenu.contains(event.target);
           const isInsideMessageItem = selectedMessageElement.contains(event.target);
           if (!isInsideDropdown && !isInsideMessageItem) {
             this.selectedMessageIndex = null;
-            this.removeClickOutsideListener();
           }
         }
+      }
+      if (!this.showEmojiPicker && this.selectedMessageIndex === null) {
+        this.removeClickOutsideListener();
       }
     },
 
@@ -614,6 +706,46 @@ export default {
     removeClickOutsideListener() {
       document.removeEventListener('click', this.handleClickOutside);
     },
+    addEmoji(emojiMessage) {
+      const emojiButton = this.$refs.emojiButton;
+      if (!emojiButton) {
+        return;
+      }
+      // 이모지 버튼의 위치 계산 (화면 전체 기준)
+      const emojiButtonRect = emojiButton.getBoundingClientRect();
+      // 채팅 컨테이너의 위치 계산
+      const chatContainerRect = this.$el.getBoundingClientRect();
+      // 이모지의 시작 위치 계산 (채팅 컨테이너 기준)
+      const x = emojiButtonRect.left + emojiButtonRect.width / 2 - chatContainerRect.left;
+      const y = emojiButtonRect.top - chatContainerRect.top;
+
+      // 이모지가 약간 좌우로 움직이도록 랜덤한 값 설정
+      const deltaX = (Math.random() - 0.5) * 100;
+      const delay = 0;
+
+      const emoji = emojiMessage.emoji || '❤️';
+
+      this.hearts.push({ x, y, deltaX, delay, emoji });
+
+      setTimeout(() => {
+        this.hearts.shift();
+      }, 4000);
+    },
+
+    toggleEmojiPicker() {
+      this.showEmojiPicker = !this.showEmojiPicker;
+      if (this.showEmojiPicker) {
+        this.addClickOutsideListener();
+      } else {
+        this.removeClickOutsideListener();
+      }
+    },
+
+    selectEmoji(emoji) {
+      console.log('Selected Emoji:', emoji); // 이모지 선택 로그 추가
+      this.sendEmoji(emoji); // 이모지 전송 메소드 호출
+    },
+
   },
 };
 </script>
@@ -735,6 +867,20 @@ export default {
   border-radius: 10px;
   border: none;
   margin-right: 10px;
+}
+
+.chat-input .emoji-btn {
+  background-color: white;
+  color: #555;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 50px;
+  margin-right: 5px;
+  font-size: 18px;
+}
+
+.chat-input .emoji-btn:hover {
+  background-color: #f0f0f0;
 }
 
 .chat-input button {
@@ -894,5 +1040,67 @@ export default {
   border-radius: 50px;
   width: 50px;
   color: black;
+}
+.emoji-picker {
+  position: absolute;
+  bottom: 60px;
+  right: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 99999;
+}
+
+.emoji-option {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.emoji-option:hover {
+  background-color: #f0f0f0;
+  border-radius: 50%;
+}
+
+.heart-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 100000;
+}
+.heart {
+  position: absolute;
+  font-size: 24px;
+  animation: float 4s ease-out forwards;
+  opacity: 1;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--deltaX), -200px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.heart-enter-active, .heart-leave-active {
+  transition: opacity 0.3s;
+}
+
+.heart-enter, .heart-leave-to {
+  opacity: 0;
+}
+
+.heart-container .heart {
+  animation-name: float;
 }
 </style>
