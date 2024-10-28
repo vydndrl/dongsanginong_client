@@ -9,9 +9,24 @@
                     class="item-img"
                     @click="this.$router.push(`/product/${item.id}`)"
                     />
-                    <div class="item-info">
-                        <h2>{{ item.packageName }}</h2>
-                        <p>{{ getAmountWithFormat(item.price) }}원</p>
+                    <span style="font-size:medium; font-weight: 400;" v-if="item.packageName.length > 10"> {{
+                        item.packageName.substring(0, 10)
+                    }}... </span>
+                    <span style="font-size:medium; font-weight: 400;" v-else> {{ item.packageName }}</span>
+                    <div class="item-info" v-if="item.discountId != null && item.discountActive == true">
+                        <p style="text-decoration: line-through; color: #999; font-size: 14px;">{{ getAmountWithFormat(item.price) }}</p>
+                        <div style="margin-bottom: 2px;">
+                            <span style="color:darkgreen; font-size:medium;">{{ getAmountWithFormat(item.price - item.discount) }}&nbsp;&nbsp;</span>
+                            <span class="sale-style">SALE</span>
+                        </div>
+                        <p style="color:#999; font-size: small;"> 1회 제공 금액 {{
+                            getAmountWithFormat(getPerCyclePrice(item.price - item.discount, item.deliveryCycle)) }} </p>
+                        <p style="color:#999; font-size: small;">
+                            🧾 누적 주문 {{ item.orderCount }}
+                        </p>
+                    </div>
+                    <div class="item-info" v-else>
+                        <p style="color:darkgreen; font-size:medium;">{{ getAmountWithFormat(item.price) }}</p>
                         <span style="color:#999; font-size: small;"> 1회 제공 금액 {{
                             getAmountWithFormat(getPerCyclePrice(item.price, item.deliveryCycle)) }} </span>
                         <br />
@@ -111,17 +126,14 @@ export default {
     cursor: pointer;
 }
 
-.item-info {
-  margin-top: 10px;
-}
-
-.item-info h2 {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.item-info p {
-  font-size: 16px;
-  color: green;
+.sale-style {
+    background-color: rgb(245, 77, 77); 
+    color: white; 
+    padding-right: 7px;
+    padding-left: 7px;
+    padding-bottom: 3px;
+    padding-top: 5px;
+    font-size: 10px;
+    margin-bottom: 10px;
 }
 </style>

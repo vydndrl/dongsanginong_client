@@ -48,30 +48,32 @@
                         매출 내역 확인
                     </v-card-title>
                     <v-card-subtitle>
-                        건수: {{ this.salesData.totalCount }}, 총 매출액: {{ this.salesData.totalAmount }}
+                        건수: {{ this.salesData.totalCount }}, 총 매출액: {{ getAmountWithFormat(this.salesData.totalSalesAmount) }} 원
                     </v-card-subtitle>
 
                     <!-- 매출 내역 테이블 -->
-                    <v-data-table :search="search">
-                        <thead>
+                     <v-card class="delivery-card" >
+                    <v-table class="table-header">
+                        <thead class="table-header">
                             <tr>
-                                <th>결제 아이디</th>
-                                <th>결제일</th>
-                                <th>패키지 명</th>
-                                <th>구매자 이름</th>
-                                <th>금액</th>
+                                <th class="table-header">주문번호</th>
+                                <th class="table-header">결제일</th>
+                                <th class="table-header">패키지 명</th>
+                                <th class="table-header">구매자 이름</th>
+                                <th class="table-header">금액</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="salesDetail in this.salesList" :key="salesDetail.orderId">
-                                <td>{{ salesDetail.orderId }}</td>
-                                <td>{{ extractYearAndMonthAndDay(salesDetail.paidAt) }}</td>
-                                <td>{{ salesDetail.packageName }}</td>
-                                <td>{{ salesDetail.customerName }}</td>
-                                <td>{{ salesDetail.paidAmount }}</td>
+                                <td  style="font-size: 13px;">{{ salesDetail.orderNumber }}</td>
+                                <td style="font-size: 16px;">{{ extractYearAndMonthAndDay(salesDetail.paidAt) }}</td>
+                                <td style="font-size: 16px;">{{ salesDetail.packageName }}</td>
+                                <td style="font-size: 16px;">{{ salesDetail.customerName }}</td>
+                                <td style="font-size: 16px;">{{ getAmountWithFormat(salesDetail.paidAmount) }}</td>
                             </tr>
                         </tbody>
-                    </v-data-table>
+                    </v-table>
+                </v-card>
                 </v-card>
             </v-col>
         </v-row>
@@ -388,6 +390,18 @@ export default {
                 this.loadMoreData();
             }
         },
+        getAmountWithFormat(amount) {
+            let ret = "";
+            let i = 0;
+            amount = String(amount);
+            for (i = 0; i < amount.length; i++) {
+                ret = String(amount[amount.length - i - 1]) + ret;
+                if (i % 3 == 2 && i != amount.length - 1) {
+                    ret = ',' + ret
+                }
+            }
+            return ret;
+        }
     }
 };
 </script>
@@ -410,5 +424,29 @@ export default {
     width: 1000px;
     /* 캔버스 너비 (컨테이너 너비를 초과하도록 설정) */
     height: 280px;
+}
+
+
+.delivery-card {
+    margin-top: 20px;
+    border: 1px solid #d4d4d4;
+    border-radius: 10px;
+    padding-right: 30px;
+    padding-left: 30px;
+}
+.table-header {
+    text-align: center !important;
+    font-size: 18px;
+    background-color: none;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.delivery-first-col {
+    padding: 10px;
+    padding-left: 70px;
+}
+.delivery-second-col {
+    padding: 10px;
+    padding-left: 70px;
 }
 </style>

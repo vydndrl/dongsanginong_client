@@ -85,9 +85,11 @@ export default {
                 return "정보 없음";
             }
 
-            const datePart = paidAt.split("T")[0]; // 날짜 부분
-            const timePart = paidAt.split("T")[1]; // 시간 부분
-            return `${datePart} ${timePart}`; // 공백으로 결합
+            const [datePart, timePart] = paidAt.split("T");
+            const [hour, minute, secondWithMillis] = timePart.split(":");
+            const second = secondWithMillis.split(".")[0]; // 소수점 이하 제거
+
+            return `${datePart} ${hour}:${minute}:${second.padEnd(2, '0')}`;
         },
         async downloadPDF() {
             const element = document.querySelector(".receipt-container");

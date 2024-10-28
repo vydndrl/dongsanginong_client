@@ -107,14 +107,32 @@ export default {
     openDiscountCreateModal() {
       this.showDiscountCreateModal = true;
     },
-    formatDateTime(dateString) {
-      const date = new Date(dateString);
-      const options = { year: 'numeric', month: '2-digit', day: '2-digit'};
-      return date.toLocaleString(undefined, options);
-    },
-    truncateProductName(productName) {
-      if (productName.length > 10) {
-        return productName.substring(0, 10) + '...';
+    methods: {
+      async getDiscountList() {
+        try {
+          const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/discount/list`, {
+            headers: {
+                sellerId : localStorage.getItem("sellerId")
+            }
+          });
+          this.discountList = response.data.content;
+          console.log(">>>>>>>>", this.discountList);
+
+          console.log(">>>>>productName : " + this.discountList[0].productName + " >>>>>discountPrice : " + this.discountList[0].discountPrice);
+        } catch (error) {
+          console.error('Error fetching discount list:', error);
+        }
+      },
+      formatDateTime(dateString) {
+        const date = new Date(dateString);
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return date.toLocaleString('ko-KR', options).replace(/\.$/, '');
+      },
+      truncateProductName(productName) {
+        if (productName.length > 10) {
+            return productName.substring(0, 10) + '...';
+        }
+        return productName; 
       }
       return productName;
     },
