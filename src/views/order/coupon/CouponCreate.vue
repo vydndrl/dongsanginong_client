@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :model-value="dialog" persistent max-width="530px" @update:model-value="updateDialog">
+  <v-dialog :model-value="dialog" max-width="530px" @update:model-value="updateDialog">
     <v-card class="custom-card" style="font-size: 15px;">
       <v-card-title class="custom-title">
         <span class="headline" style="font-size: 18px;">쿠폰 생성</span>

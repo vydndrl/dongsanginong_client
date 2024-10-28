@@ -57,11 +57,23 @@
         </v-btn>
         <v-btn 
           class="custom-button" 
-          @click="dialog = false"
+          @click="showConfirmCloseModal"
           style="background-color: #e0e0e0; margin-right: 15px;"
         >
           닫기
         </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <!-- 닫기 확인 모달 -->
+  <v-dialog v-model="confirmCloseModal" max-width="300px">
+    <v-card class="modal" style="text-align: center;">
+      <v-card-text style="margin-top: 3px;">정말 닫으시겠습니까?</v-card-text>
+      <span style="color: gray; font-size: 13px; margin-top: -10px">현재 작성중인 내용은 저장되지 않습니다.</span><br>
+      <v-card-actions class="action-buttons" style="justify-content: center; margin-left: 2%; margin-top: -6%;">
+        <v-btn @click="closeDialog" class="custom-button">닫기</v-btn>
+        <v-btn @click="confirmCloseModal = false" class="custom-close-button">취소</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -83,6 +95,7 @@ export default {
         imageUrls: []
       },
       dialog: false,
+      confirmCloseModal: false, // 닫기 확인 모달 상태
       selectedFiles: [],
       filePreviews: [],
     };
@@ -107,21 +120,20 @@ export default {
         console.error('Error fetching notice data:', error);
       }
     },
-    handleFileSelection(event) {
+    async handleFileSelection(event) {
       const files = Array.from(event.target.files);
-      files.forEach(file => {
+      for (const file of files) {
         this.selectedFiles.push(file);
-        const previewUrl = URL.createObjectURL(file);
-        this.filePreviews.push({ url: previewUrl, file });
-      });
+        const s3Url = await this.uploadImage(file);
+        this.filePreviews.push({ url: s3Url, file });
+      }
       this.$refs.fileInput.value = null;
     },
     removeFile(index) {
       this.selectedFiles.splice(index, 1);
       this.filePreviews.splice(index, 1);
-      // notice.imageUrls에서도 삭제
       if (index < this.notice.imageUrls.length) {
-        this.notice.imageUrls.splice(index, 1); // 기존 이미지 배열에서 삭제
+        this.notice.imageUrls.splice(index, 1);
       }
     },
     async uploadFiles() {
@@ -168,13 +180,12 @@ export default {
     async updateNotice() {
       await this.uploadFiles();
 
-      // 삭제된 이미지를 반영
       const remainingImageUrls = this.filePreviews.map(preview => preview.url);
 
       const requestData = {
         title: this.notice.title,
         content: this.notice.content,
-        imageUrls: remainingImageUrls,  // 남은 이미지들만 전송
+        imageUrls: remainingImageUrls,
       };
 
       const accessToken = localStorage.getItem('accessToken');
@@ -192,6 +203,23 @@ export default {
       } catch (error) {
         console.error('공지사항 수정 실패:', error);
       }
+    },
+    showConfirmCloseModal() {
+      this.confirmCloseModal = true;
+    },
+    closeDialog() {
+      this.dialog = false;
+      this.confirmCloseModal = false;
+      this.resetFormData();
+    },
+    resetFormData() {
+      this.notice = {
+        title: '',
+        content: '',
+        imageUrls: []
+      };
+      this.selectedFiles = [];
+      this.filePreviews = [];
     },
   },
 };
@@ -212,28 +240,27 @@ button {
 .custom-input {
   width: 100%;
   padding: 0.5em;
-  border: 1px solid #ccc; /* 테두리 추가 */
-  border-radius: 4px; /* 모서리 둥글게 */
+  border: 1px solid #ccc;
+  border-radius: 4px;
   box-sizing: border-box;
   font-size: 1em;
 }
 
 textarea.custom-input {
-  resize: vertical; /* 텍스트 영역 크기 조정 가능 */
-  min-height: 300px; /* 텍스트 영역 최소 높이 설정 */
+  resize: vertical;
+  min-height: 300px;
 }
 
-/* 선택된 파일 목록 */
 .preview-list {
-  display: flex; /* 가로로 나열 */
-  gap: 10px; /* 각 이미지 사이 간격 */
-  list-style-type: none; /* 리스트 기본 스타일 제거 */
+  display: flex;
+  gap: 10px;
+  list-style-type: none;
   padding: 0;
-  margin-bottom: 10px; /* 파일 목록과 버튼 간 간격 좁힘 */
+  margin-bottom: 10px;
 }
 
 .preview-container {
-  position: relative; /* 이미지에 상대적인 위치로 버튼 배치 */
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -255,7 +282,7 @@ textarea.custom-input {
   position: absolute;
   top: -5px;
   right: -5px;
-  background-color: black; /* 버튼 배경색 수정 */
+  background-color: black;
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -265,37 +292,35 @@ textarea.custom-input {
   align-items: center;
 }
 
-/* 모달 커스텀 스타일 */
 .custom-dialog {
-  padding: 10px; /* 모달 내부 패딩 */
+  padding: 10px;
 }
 
 .custom-card {
-  border-radius: 30px; /* 모달 테두리 둥글기 더 둥글게 수정 */
-  padding: 10px; /* 모달 내부 패딩 */
+  border-radius: 30px;
+  padding: 10px;
 }
 
 .custom-title {
   background-color: #BCC07B;
-  border-radius: 10px; /* 상단과 하단 모두 둥글게 */
+  border-radius: 10px;
   text-align: center;
-  width: calc(97% - 30px); /* 좌우 여백 맞추기 */
-  margin: 0 auto; /* 가운데 정렬 */
+  width: calc(97% - 30px);
+  margin: 0 auto;
   padding: 7px;
 }
 
 .action-buttons {
-  margin-bottom: 10px; /* 버튼들 아래쪽 여백을 줄임 */
-  gap: 5px; /* 버튼 간격을 좁게 조정 */
+  margin-bottom: 10px;
+  gap: 5px;
 }
 
 .custom-button {
-  color: black !important; /* 텍스트 색상 검정으로 설정 */
-  transition: background-color 0.3s ease; /* 배경색 변경 시 부드럽게 전환 */
-  border-radius: 50px; /* 모서리 둥글기 50px로 설정 */
+  color: black !important;
+  transition: background-color 0.3s ease;
+  border-radius: 50px;
 }
 
-/* 완료 메시지 모달 */
 .modal {
   background-color: rgb(255, 255, 255);
   border: none;
