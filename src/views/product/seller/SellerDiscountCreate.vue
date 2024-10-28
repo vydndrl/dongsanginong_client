@@ -133,23 +133,6 @@ export default {
       return Math.ceil(this.searchResults.length / this.itemsPerPage);
     },
   },
-  watch: {
-    dialog(val) {
-      if (val) {
-        // 모달이 열릴 때 초기화
-        this.discount = {
-          discount: null,
-          startAt: null,
-          endAt: null,
-          productIdList: [],
-        };
-        this.searchTerm = '';
-        this.searchResults = [];
-        this.productOptions = [];
-        this.currentPage = 1;
-      }
-    },
-  },
   methods: {
     updateDialog(value) {
       this.$emit('update:model-value', value);
@@ -213,29 +196,38 @@ export default {
         (id) => id !== productId
       );
     },
-    async handleSave() {
-      try {
-        await this.createDiscount();
-        this.alertMessage = "할인이 성공적으로 생성되었습니다!";
-        this.alertModal = true; // 완료 메시지 모달 열기
-      } catch (error) {
-        this.alertMessage = "할인 생성 중 오류가 발생했습니다.";
+    handleSave() {
+      if (!this.discount.discount || !this.discount.startAt || !this.discount.endAt) {
+        this.alertMessage = "할인 금액과 날짜를 입력하시고, 할인 할 상품을 추가해주세요.";
         this.alertModal = true;
-        console.error('할인 생성 중 오류 발생:', error);
+        return;
       }
+
+      if (this.discount.productIdList.length === 0) {
+        this.alertMessage = "적용할 상품을 선택해 주세요.";
+        this.alertModal = true;
+        return;
+      }
+
+      this.createDiscount();
     },
     async createDiscount() {
-      await axios.post(
-        `${process.env.VUE_APP_API_BASE_URL}/product-service/discounts/create`,
-        this.discount,
-        {
-          headers: {
-            sellerId: localStorage.getItem('sellerId'),
-          },
-        }
-      );
-      this.$emit('created');
-      this.updateDialog(false); // 저장 후 메인 모달 닫기
+      try {
+        await axios.post(
+          `${process.env.VUE_APP_API_BASE_URL}/product-service/discounts/create`,
+          this.discount,
+          {
+            headers: {
+              sellerId: localStorage.getItem('sellerId'),
+            },
+          }
+        );
+        this.alertMessage = "할인이 성공적으로 생성되었습니다!";
+      } catch (error) {
+        this.alertMessage = "이미 할인이 적용된 상품이 존재합니다.";
+        console.error('할인 생성 중 오류 발생:', error);
+      }
+      this.alertModal = true; // 결과 메시지 모달 열기
     },
   },
 };
