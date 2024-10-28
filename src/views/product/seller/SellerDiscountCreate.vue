@@ -18,8 +18,8 @@
             @click:append="searchProducts"
           ></v-text-field>
 
-          <!-- 검색 결과로 나온 상품 리스트 -->
-          <div v-if="searchResults.length > 0" class="product-list-container">
+          <!-- 검색 결과로 나온 상품 리스트 및 페이지네이션 -->
+          <div v-if="searchResults.length > 0" class="product-list-wrapper">
             <v-list class="product-list">
               <v-list-item
                 v-for="product in paginatedProducts"
@@ -33,8 +33,7 @@
                 ></v-checkbox>
               </v-list-item>
             </v-list>
-
-            <!-- 페이지네이션 (방향 화살표만 표시) -->
+            <!-- 페이지네이션 -->
             <v-pagination
               v-model="currentPage"
               :length="totalPages"
@@ -46,16 +45,18 @@
           </div>
 
           <!-- 선택된 상품 리스트 -->
-          <div v-if="discount.productIdList.length > 0" class="mt-4">
+          <div v-if="discount.productIdList.length > 0" class="mt-4 selected-product-list">
             <h3>선택된 상품:</h3>
-            <v-chip
-              v-for="productId in discount.productIdList"
-              :key="productId"
-              class="ma-2"
-              @click="removeProduct(productId)"
-            >
-              {{ getProductNameById(productId) }}
-            </v-chip>
+            <div class="chip-container">
+              <v-chip
+                v-for="productId in discount.productIdList"
+                :key="productId"
+                class="ma-2 custom-chip"
+                @click="removeProduct(productId)"
+              >
+                {{ getProductNameById(productId) }}
+              </v-chip>
+            </div>
           </div>
         </v-form>
       </v-card-text>
@@ -80,7 +81,7 @@
       <v-card-text style="margin-top: 3px;">정말 닫으시겠습니까?</v-card-text>
       <span style="color: gray; font-size: 13px; margin-top: -10px">현재 작성중인 내용은 저장되지 않습니다.</span><br>
       <v-card-actions class="action-buttons" style="justify-content: center; margin-left: 2%; margin-top: -6%;">
-        <v-btn @click="closeDialog" class="custom-button">닫기</v-btn>
+        <v-btn @click="confirmClose" class="custom-button">닫기</v-btn>
         <v-btn @click="confirmCloseModal = false" class="custom-close-button">취소</v-btn>
       </v-card-actions>
     </v-card>
@@ -90,7 +91,7 @@
   <v-dialog v-model="alertModal" max-width="260px">
     <v-card class="modal" style="padding: 10px; padding-right: 20px; text-align: center;">
       <v-card-text>{{ alertMessage }}</v-card-text>
-      <v-btn @click="closeAlertModal" class="submit-btn">close</v-btn>
+      <v-btn @click="closeAlertModal" class="submit-btn">닫기</v-btn>
     </v-card>
   </v-dialog>
 </template>
@@ -134,8 +135,23 @@ export default {
     },
   },
   methods: {
+    resetFormData() {
+      this.discount = {
+        discount: null,
+        startAt: null,
+        endAt: null,
+        productIdList: [],
+      };
+      this.searchTerm = '';
+      this.currentPage = 1;
+      this.searchResults = [];
+    },
     updateDialog(value) {
       this.$emit('update:model-value', value);
+    },
+    confirmClose() {
+      this.resetFormData();
+      this.closeDialog();
     },
     closeDialog() {
       this.confirmCloseModal = false; // 닫기 확인 모달 닫기
@@ -161,7 +177,6 @@ export default {
           }
         );
 
-        // 모든 상품 리스트를 저장
         this.productOptions = response.data.content.map((product) => ({
           text: product.packageName,
           value: product.packageId,
@@ -198,7 +213,7 @@ export default {
     },
     handleSave() {
       if (!this.discount.discount || !this.discount.startAt || !this.discount.endAt) {
-        this.alertMessage = "할인 금액과 날짜를 입력하시고, 할인 할 상품을 추가해주세요.";
+        this.alertMessage = "입력할 할인금액과 날짜, 할인품목을 입력하세요.";
         this.alertModal = true;
         return;
       }
@@ -224,7 +239,7 @@ export default {
         );
         this.alertMessage = "할인이 성공적으로 생성되었습니다!";
       } catch (error) {
-        this.alertMessage = "이미 할인이 적용된 상품이 존재합니다.";
+        this.alertMessage = "이미 다른 할인이 적용된 상품이 존재합니다.";
         console.error('할인 생성 중 오류 발생:', error);
       }
       this.alertModal = true; // 결과 메시지 모달 열기
@@ -251,6 +266,13 @@ export default {
   margin: 0 auto;
   padding: 7px;
   font-size: 17px;
+}
+
+.product-list-wrapper {
+  border: 1px solid #d4d4d4; /* 테두리 추가 */
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 10px;
 }
 
 .action-buttons {
@@ -313,4 +335,13 @@ export default {
   max-height: 100%;
   overflow: hidden;
 }
+
+.selected-product-list {
+  text-align: left; /* 선택된 상품을 왼쪽 정렬 */
+}
+
+.chip-container {
+  margin-left: -8px;
+}
+
 </style>
