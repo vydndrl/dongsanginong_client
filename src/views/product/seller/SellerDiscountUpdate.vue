@@ -300,7 +300,7 @@
           this.alertMessage = "할인이 성공적으로 수정되었습니다.";
           this.alertModal = true;
         } catch (error) {
-          this.errorMessage = "선택하신 상품이 다른 할인을 이미 가지고 있습니다.";
+          this.errorMessage = "상품을 선택하실 수 없습니다.";
           this.errorModal = true;
           console.error('할인 수정 중 오류 발생:', error);
         }

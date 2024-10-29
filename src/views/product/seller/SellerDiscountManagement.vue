@@ -57,7 +57,7 @@
     <v-dialog v-model="showDeleteConfirmModal" max-width="340px">
       <v-card class="deleteModalCard" style="padding: 7px; text-align: center;">
         <v-card-text>
-          정말 이 할인을 삭제하시겠습니까?
+          삭제하시겠습니까?
         </v-card-text>
         <v-card-actions style="justify-content: center;">
           <v-btn @click="confirmDeleteDiscount" class="submit-btn">삭제</v-btn>
@@ -80,14 +80,14 @@
 
 
     <!-- 액션 모달 (수정, 삭제 버튼) -->
-    <v-dialog v-model="showActionModal" max-width="350" class="custom-dialog">
+    <v-dialog v-model="showActionModal" max-width="320" class="custom-dialog">
       <v-card class="custom-card" style="padding-top: 20px;">
         <v-card-title class="custom-title">
           <span class="headline">할인 관리</span>
         </v-card-title>
         <v-card-text class="button-container">
-          <v-btn @click="openDiscountUpdateModal" class="modal-btn submit-btn" style="width: 150px; margin-right: 10px;">수정</v-btn>
-          <v-btn @click="openDeleteConfirmModal" class="modal-btn submit-btn" style="width: 150px; background-color: #e0e0e0;">삭제</v-btn>
+          <v-btn @click="openDiscountUpdateModal" class="modal-btn submit-btn" style="width: 120px; margin-right: 10px;">수정</v-btn>
+          <v-btn @click="openDeleteConfirmModal" class="modal-btn submit-btn" style="width: 120px; background-color: #e0e0e0;">삭제</v-btn>
         </v-card-text>
         
       </v-card>
@@ -242,7 +242,7 @@ export default {
 }
 
 .custom-dialog {
-  padding: 20px;
+  padding: 15px;
 }
 
 .custom-card {
@@ -251,14 +251,13 @@ export default {
 }
 
 .custom-title {
-  background-color: #BCC07B;
   border-radius: 10px;
   text-align: center;
   width: calc(97% - 30px);
   margin: 0 auto;
-  padding: 7px;
+  padding: 5px;
   font-size: 17px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .submit-btn {
