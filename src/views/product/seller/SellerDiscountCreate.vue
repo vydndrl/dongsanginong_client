@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :model-value="dialog" @update:model-value="updateDialog" max-width="550" class="custom-dialog">
+  <v-dialog :model-value="dialog" @update:model-value="updateDialog" @click:outside="handleOutsideClick" max-width="550" class="custom-dialog">
     <v-card class="custom-card" style="padding-top: 20px;">
       <v-card-title class="custom-title">
         <span class="headline">할인 생성</span>
@@ -65,7 +65,7 @@
         
         <v-btn color="light_green" 
           class="custom-button" 
-          @click="handleSave">저장</v-btn>
+          @click="handleSave">생성</v-btn>
 
         <v-btn color="light_green" 
           class="custom-close-button"
@@ -92,6 +92,14 @@
     <v-card class="modal" style="padding: 10px; padding-right: 20px; text-align: center;">
       <v-card-text>{{ alertMessage }}</v-card-text>
       <v-btn @click="closeAlertModal" class="submit-btn">닫기</v-btn>
+    </v-card>
+  </v-dialog>
+
+  <!-- 오류 메시지 모달 -->
+  <v-dialog v-model="errorModal" max-width="300px">
+    <v-card class="modal" style="padding: 10px; padding-right: 20px; text-align: center;">
+      <v-card-text>{{ errorMessage }}</v-card-text>
+      <v-btn @click="closeErrorModal" class="submit-btn">닫기</v-btn>
     </v-card>
   </v-dialog>
 </template>
@@ -122,6 +130,8 @@ export default {
       confirmCloseModal: false, // 닫기 확인 모달 상태
       alertModal: false, // 완료 메시지 모달 상태
       alertMessage: '', // 완료 메시지 내용
+      errorModal: false, // 오류 메시지 모달 상태
+      errorMessage: '', // 오류 메시지 내용
     };
   },
   computed: {
@@ -149,6 +159,10 @@ export default {
     updateDialog(value) {
       this.$emit('update:model-value', value);
     },
+    handleOutsideClick() {
+      this.resetFormData(); // 모달 밖을 클릭해 닫힐 때도 폼 데이터 초기화
+      this.updateDialog(false); // 메인 모달 닫기
+    },
     confirmClose() {
       this.resetFormData();
       this.closeDialog();
@@ -158,7 +172,13 @@ export default {
       this.updateDialog(false); // 메인 모달 닫기
     },
     closeAlertModal() {
-      this.alertModal = false; // 완료 메시지 모달 닫기
+      this.alertModal = false;
+      this.confirmCloseModal = false;
+      this.updateDialog(false); // 모든 모달 닫기
+      window.location.reload();
+    },
+    closeErrorModal() {
+      this.errorModal = false;
     },
     async fetchAllProducts() {
       try {
@@ -182,6 +202,8 @@ export default {
           value: product.packageId,
         }));
       } catch (error) {
+        this.errorMessage = '상품 목록을 가져오는 중 오류가 발생했습니다.';
+        this.errorModal = true;
         console.error('상품 목록을 가져오는 중 오류 발생:', error);
       }
     },
@@ -213,14 +235,14 @@ export default {
     },
     handleSave() {
       if (!this.discount.discount || !this.discount.startAt || !this.discount.endAt) {
-        this.alertMessage = "입력할 할인금액과 날짜, 할인품목을 입력하세요.";
-        this.alertModal = true;
+        this.errorMessage = "할인금액, 날짜, 적용할 상품을 입력하세요.";
+        this.errorModal = true;
         return;
       }
 
       if (this.discount.productIdList.length === 0) {
-        this.alertMessage = "적용할 상품을 선택해 주세요.";
-        this.alertModal = true;
+        this.errorMessage = "적용할 상품을 선택해 주세요.";
+        this.errorModal = true;
         return;
       }
 
@@ -238,11 +260,12 @@ export default {
           }
         );
         this.alertMessage = "할인이 성공적으로 생성되었습니다!";
+        this.alertModal = true;
       } catch (error) {
-        this.alertMessage = "이미 다른 할인이 적용된 상품이 존재합니다.";
+        this.errorMessage = "선택하신 상품이 다른 할인을 이미 가지고 있습니다.";
+        this.errorModal = true;
         console.error('할인 생성 중 오류 발생:', error);
       }
-      this.alertModal = true; // 결과 메시지 모달 열기
     },
   },
 };
@@ -343,5 +366,4 @@ export default {
 .chip-container {
   margin-left: -8px;
 }
-
 </style>
