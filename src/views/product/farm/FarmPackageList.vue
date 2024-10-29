@@ -265,7 +265,7 @@ export default {
 .heart-emoji {
   position: absolute;
   top: -20px;
-  left: 50%;
+  left: 35%;
   transform: translateX(-50%);
   font-size: 24px;
   opacity: 0;
