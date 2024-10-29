@@ -279,7 +279,7 @@
         }
   
         if (this.localDiscount.productIdList.length === 0) {
-          this.alertMessage = "적용할 상품을 선택해 주세요.";
+          this.alertMessage = "적용하실 상품을 선택해 주세요.";
           this.alertModal = true;
           return;
         }
