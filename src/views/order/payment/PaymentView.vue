@@ -222,7 +222,7 @@
                                 <v-radio :value="index"></v-radio>
                             </div>
                             <div>
-                                <p class="coupon-discount-rate">{{ coupon.discountRate }}%</p>
+                                <p class="coupon-discount-rate">{{ coupon.discountPercentage }}%</p>
                                 <p class="coupon-name">{{ coupon.couponName }}</p>
                                 <p class="coupon-expiration">{{ getExpiration(coupon.expiration) }}까지 사용 가능</p>
                             </div>
@@ -280,37 +280,37 @@
                     &#8251; 주소지를 변경하면 기존에 정기구독하던 상품의 배송지도 모두 변경됩니다.
                 </p>
             </div>
-                <hr class="horizontal-divider" />
-                <form @submit.prevent="onSubmit_address">
-                    <div class="form-group">
-                        <label for="zipcode">우편번호</label>
-                        <input disabled type="text" id="zipcode" v-model="zipcode" placeholder="우편번호를 입력하세요 (ex. 12345)"
-                            required />
+            <hr class="horizontal-divider" />
+            <form @submit.prevent="onSubmit_address">
+                <div class="form-group">
+                    <label for="zipcode">우편번호</label>
+                    <input disabled type="text" id="zipcode" v-model="zipcode" placeholder="우편번호를 입력하세요 (ex. 12345)"
+                        required />
+                </div>
+
+                <input type="button" class="find-postal" @click="execDaumPostcode_address" value="우편번호 찾기" />
+
+                <div class="form-group">
+                    <label for="address">주소</label>
+                    <input disabled type="text" id="address" v-model="memberAddress"
+                        placeholder="도로명 주소를 입력하세요 (ex. 서울시 노원구)" required />
+                </div>
+                <div class="form-group">
+                    <label for="address-detail">상세 주소</label>
+                    <input type="text" id="address-detail" v-model="memberAddressDetail"
+                        placeholder="상세 주소를 입력하세요 (ex. 101호)" required ref="addressDetail" />
+                </div>
+
+                <hr class="horizontal-divider" style="margin-top:60px" />
+
+                <div class="footer">
+
+                    <div class="update-container">
+
+                        <button type="submit" class="update-button">주소지 변경하기</button>
                     </div>
-
-                    <input type="button" class="find-postal" @click="execDaumPostcode_address" value="우편번호 찾기" />
-
-                    <div class="form-group">
-                        <label for="address">주소</label>
-                        <input disabled type="text" id="address" v-model="memberAddress" placeholder="도로명 주소를 입력하세요 (ex. 서울시 노원구)"
-                            required />
-                    </div>
-                    <div class="form-group">
-                        <label for="address-detail">상세 주소</label>
-                        <input type="text" id="address-detail" v-model="memberAddressDetail" 
-                            placeholder="상세 주소를 입력하세요 (ex. 101호)" required ref="addressDetail" />
-                    </div>
-
-                    <hr class="horizontal-divider" style="margin-top:60px" />
-
-                    <div class="footer">
-
-                        <div class="update-container">
-
-                            <button type="submit" class="update-button">주소지 변경하기</button>
-                        </div>
-                    </div>
-                </form>
+                </div>
+            </form>
         </v-card>
     </v-dialog>
 
@@ -407,7 +407,7 @@ export default {
             logoImage: "",
             confirmPayModal: false,
             deliveryModal: false,
-            
+
             // 우편번호 API
             memberInfo_address: {
                 phone: '',
@@ -448,21 +448,28 @@ export default {
             this.memberName = this.member.name;
             this.memberPhone = this.member.phone;
 
-            // 적용 가능한 쿠폰 불러오기
-            const farmId = this.packageProduct.farmId;
-            const couponRes = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/order-service/coupon/farm/${farmId}`);
-            this.availableCoupons = couponRes.data.availableCouponList;
-            this.couponDiscountRate = Number(couponRes.discountRate) / 100;
-            this.couponDiscountedAmount = this.couponDiscountRate * this.packageProduct.price;
-
-            this.couponDiscountedAmount = 0;
-
-            // totalAmount 계산
-            this.totalAmount = this.packageProduct.price;
-
             // 할인 가격
             console.log(this.packageProduct);
             this.discountedPrice = this.packageProduct.discount == undefined ? 0 : this.packageProduct.discount;
+
+            // totalAmount 계산
+            this.totalAmount = this.packageProduct.price - this.discountedPrice;
+
+            // 적용 가능한 쿠폰 불러오기
+            const memberId = localStorage.getItem("memberId");
+            const couponRes = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/order-service/coupon/downloaded-coupon`, {
+                headers: {
+                    "myId": memberId
+                }
+            });
+            const allCoupons = couponRes.data;
+            this.availableCoupons = allCoupons.filter(coupon => coupon.useYn === "N");
+            this.couponDiscountRate = Number(couponRes.discountRate) / 100;
+            this.couponDiscountedAmount = this.couponDiscountRate * this.packageProduct.price;
+
+            this.couponDiscountRate = 0;
+            this.couponDiscountedAmount = 0;
+
         } catch (e) {
             console.log(e);
         }
@@ -592,13 +599,15 @@ export default {
         changeCoupon() {
             if (this.selectedCoupon === undefined || this.selectedCoupon == -1) {
                 this.selectedCoupon = undefined;
-                this.selectedCouponName = undefined
-                this.coupon = undefined
+                this.selectedCouponName = undefined;
+                this.coupon = undefined;
                 this.couponDiscountRate = 0;
                 this.couponDiscountedAmount = 0;
+                this.totalAmount = this.packageProduct.price - this.discountedPrice;
                 this.couponModal = false;
                 return;
             }
+
 
             this.selectedCoupon = Number(this.selectedCoupon);
             this.selectedCouponName = this.availableCoupons[this.selectedCoupon].couponName;
@@ -606,10 +615,10 @@ export default {
             this.couponModal = false;
 
             // 할인가 계산
-            this.couponDiscountRate = this.availableCoupons[this.selectedCoupon].discountRate / 100.0;
+            this.couponDiscountRate = this.availableCoupons[this.selectedCoupon].discountPercentage / 100.0;
             this.couponDiscountedAmount = this.packageProduct.price * this.couponDiscountRate;
 
-            this.totalAmount = this.packageProduct.price - this.couponDiscountedAmount;
+            this.totalAmount = this.packageProduct.price - this.discountedPrice - this.couponDiscountedAmount;
             console.log(this.selectedCouponName);
         },
         async doPay() {

@@ -179,8 +179,8 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: flex-start; /* 왼쪽 정렬 */
-    height: 100%;
-    padding-left: 40px; /* 왼쪽으로 40px 이동 */
+    height: 90%;
+    padding-left: 45px; /* 왼쪽으로 40px 이동 */
     transform: translateY(20px); /* 아래로 20px 이동 */
 }
 
@@ -193,7 +193,7 @@ export default {
 }
 
 .coupon-name {
-    font-size: 14px;
+    font-size: 12px;
     margin-bottom: 10px;
     white-space: pre-wrap; 
     word-wrap: break-word;
