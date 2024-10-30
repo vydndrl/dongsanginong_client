@@ -71,6 +71,11 @@ export default {
   mounted() {
     this.fetchReviews();
   },
+  watch: {
+    currentPage() {
+      this.paginateReviews();
+    }
+  },
   methods: {
     async fetchReviews() {
       const farmId = localStorage.getItem('farmId')

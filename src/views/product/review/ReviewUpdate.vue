@@ -15,7 +15,7 @@
                     <!-- 별점 -->
                     <div class="rating-section" style="margin-top: -10px; margin-left: -10px;">
                         <v-rating v-model="review.rating" background-color="grey lighten-2" color="#FFCC80" length="5"
-                            rounded />
+                            rounded class="custom-rating" />
                     </div>
 
                     <!-- 후기에 대한 요약 -->
@@ -391,4 +391,13 @@ textarea.custom-input {
     padding: 10px 20px;
     border-radius: 30px;
 }
+
+::v-deep .custom-rating .v-icon {
+    font-size: 40px !important;
+    /* 별 크기를 40px로 설정 */
+    width: 40px !important;
+    /* 별의 너비 설정 */
+    height: 40px !important;
+    /* 별의 높이 설정 */
+  }
 </style>

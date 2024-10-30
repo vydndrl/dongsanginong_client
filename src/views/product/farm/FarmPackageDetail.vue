@@ -124,7 +124,7 @@
           <v-col cols="12" class="review-info">
             <div class="header-content">
               <!-- 별점 표시 -->
-              <div class="rating">
+              <div class="rating" style="margin-top: -20px;">
                 <span v-for="star in 5" :key="star">
                   <v-icon v-if="star <= selectedReview.rating" class="star-icon">mdi-star</v-icon>
                   <v-icon v-else class="star-icon">mdi-star-outline</v-icon>
@@ -268,7 +268,7 @@ export default {
       const reviewResponse = await axios.get(
         `${process.env.VUE_APP_API_BASE_URL}/product-service/reviews/no-auth/${packageId}/list`
       );
-      this.reviews = reviewResponse.data;
+      this.reviews = reviewResponse.data.reverse();
       this.totalReviews = this.reviews.length;
     } catch (e) {
       console.error(e);
