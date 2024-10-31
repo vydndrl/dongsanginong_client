@@ -334,7 +334,7 @@ export default {
       );
       const productData = productResponse.data;
       console.log(productData)
-      console.log(">>>>id: " + productData.discountId + "  5>>>>discount: " + productData.discount + ">>>> name: " + productData.packageName);
+      console.log(">>>>id: " + productData.discountId + "  >>>>discount: " + productData.discount + ">>>> name: " + productData.packageName);
 
       // delivery_cycle -> deliveryCycle로 변환
       this.packageProduct = {
@@ -442,14 +442,17 @@ export default {
       return parseInt(finalPrice).toLocaleString('ko-KR');
     },
 
-    startEdit() {
+     startEdit() {
       this.isEditing = true;
       this.originalDetailedDescription = this.packageProduct.detailedProductDescription || '';
 
       if (this.editorInstance) {
+        // 에디터 인스턴스가 이미 있으면 초기화만 수행
         this.editorInstance.setHTML(this.originalDetailedDescription);
       } else {
         this.$nextTick(() => {
+          // 에디터 초기화
+          console.log('Editor Element:', this.$refs.editor);
           this.editorInstance = new Editor({
             el: this.$refs.editor,
             previewStyle: 'vertical',
@@ -458,7 +461,7 @@ export default {
             initialValue: this.originalDetailedDescription,
             language: 'ko',
             hooks: {
-              addImageBlobHook: this.onImageUpload,
+              addImageBlobHook: this.onImageUpload, // 이미지 업로드 훅 설정
             },
             toolbarItems: [
               ['heading', 'bold'],
@@ -466,11 +469,22 @@ export default {
               ['image']
             ],
             plugins: [fontSize, colorSyntax],
+
+            customHTMLRenderer: {
+              htmlBlock: {
+                iframe(node) {
+                  return [
+                    { type: 'openTag', tagName: 'iframe', outerNewLine: true, attributes: node.attrs },
+                    { type: 'html', content: node.childrenHTML },
+                    { type: 'closeTag', tagName: 'iframe', outerNewLine: true },
+                  ];
+                }
+              }
+            }
           });
         });
       }
     },
-
 
      cancelEdit() {
       this.isEditing = false;
@@ -915,11 +929,5 @@ export default {
 
 .edit-actions {
   margin-top: 10px;
-}
-
-.video-iframe {
-  width: 100%;
-  height: 315px;
-  border: none;
 }
 </style>
