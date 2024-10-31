@@ -633,11 +633,13 @@ export default {
                     body = {
                         "packageId": this.packageProduct.id,
                     }
+                    console.log(body)
                 } else {
                     body = {
                         "packageId": this.packageProduct.id,
                         "couponId": this.coupon.couponId,
                     }
+                    console.log(body)
                 }
                 const paymentResponse = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/order-service/order`, body);
                 const orderId = paymentResponse.data.orderId;
