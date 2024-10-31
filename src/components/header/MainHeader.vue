@@ -671,7 +671,7 @@ export default {
 
                 try{
                     // 트랜잭션 생성 (읽기/쓰기 모드)
-                    let transaction = db.transaction(['notifications'], 'readwrite');
+                    let transaction = db.transaction('notifications', 'readwrite');
 
                     // Object Store 가져오기
                     let objectStore = transaction.objectStore('notifications');
