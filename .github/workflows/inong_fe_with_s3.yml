@@ -30,6 +30,10 @@ jobs:
           VUE_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           VUE_APP_GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           VUE_APP_GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI}}
+          VUE_APP_PORTONE_STORE_ID: ${{ secrets.PORTONE_STORE_ID }}
+          VUE_APP_PORTONE_CHANNEL_KEY: ${{ secrets.PORTONE_CHANNEL_KEY }}
+          VUE_APP_FIREBASE_VAPID_KEY: ${{ secrets.FIREBASE_VAPID_KEY }}
+          VUE_APP_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
         working-directory: .
         run: npm run build
 
