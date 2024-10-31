@@ -22,6 +22,11 @@ jobs:
         run: npm install
 
       - name: npm build
+        env:
+          VUE_APP_API_BASE_URL: ${{ secrets.BASE_URL }}
+          VUE_APP_MY_URL: ${{ secrets.MY_URL }}
+          VUE_APP_KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
+          VUE_APP_KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
         working-directory: .
         run: npm run build
 
