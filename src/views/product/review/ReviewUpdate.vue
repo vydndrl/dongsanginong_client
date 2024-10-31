@@ -14,8 +14,8 @@
 
                     <!-- 별점 -->
                     <div class="rating-section" style="margin-top: -10px; margin-left: -10px;">
-                        <v-rating v-model="review.rating" background-color="grey lighten-2" color="#FFCC80"
-                            length="5" rounded />
+                        <v-rating v-model="review.rating" background-color="grey lighten-2" color="#FFCC80" length="5"
+                            rounded class="custom-rating" />
                     </div>
 
                     <!-- 후기에 대한 요약 -->
@@ -130,22 +130,26 @@ export default {
                 this.filePreviews.push({ url: previewUrl, file });
             });
             this.$refs.fileInput.value = null;
-        },
+        }
+        ,
         removeFile(index) {
             this.selectedFiles.splice(index, 1);
             this.filePreviews.splice(index, 1);
-            // review.imageUrls에서도 삭제
             if (index < this.review.imageUrls.length) {
-                this.review.imageUrls.splice(index, 1); // 기존 이미지 배열에서 삭제
+                this.review.imageUrls.splice(index, 1);
             }
         },
         async uploadFiles() {
             const uploadedImageUrls = [];
             for (let file of this.selectedFiles) {
-                const imageUrl = await this.uploadImage(file);
-                uploadedImageUrls.push(imageUrl);
+                if (file instanceof File) {
+                    const imageUrl = await this.uploadImage(file);
+                    uploadedImageUrls.push(imageUrl);
+                } else {
+                    uploadedImageUrls.push(file.url);
+                }
             }
-            this.review.imageUrls = [...this.review.imageUrls, ...uploadedImageUrls];
+            this.review.imageUrls = [...uploadedImageUrls];
         },
         async uploadImage(blob) {
             const accessToken = localStorage.getItem('accessToken');
@@ -183,19 +187,17 @@ export default {
         async createReview() {
             await this.uploadFiles();
 
-            const remainingImageUrls = this.filePreviews.map(preview => preview.url);
-
             const requestData = {
                 title: this.review.title,
                 contents: this.review.contents,
                 rating: this.review.rating,
-                imageUrls: remainingImageUrls,
+                imageUrls: this.review.imageUrls,
             };
 
             const accessToken = localStorage.getItem('accessToken');
             const reviewId = Number(this.reviewId);
             try {
-                await fetch(`${process.env.VUE_APP_API_BASE_URL}/product-service/reviews/${reviewId}/update`, {
+                const response = await fetch(`${process.env.VUE_APP_API_BASE_URL}/product-service/reviews/${reviewId}/update`, {
                     method: 'PUT',
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
@@ -203,7 +205,14 @@ export default {
                     },
                     body: JSON.stringify(requestData),
                 });
-                this.successModal = true;
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    this.alertMessage = errorData.message || '리뷰 수정 중 오류가 발생했습니다.';
+                    this.errorModal = true;
+                } else {
+                    this.successModal = true;
+                }
             } catch (error) {
                 console.error('리뷰 수정 실패:', error);
                 this.alertMessage = '리뷰 수정 중 오류가 발생했습니다.';
@@ -222,7 +231,7 @@ export default {
             this.successModal = false;
             this.errorModal = false;
             this.dialog = false;
-            window.location.reload()
+            window.location.reload();
         },
         closeModalAndReset() {
             this.review.rating = 0;
@@ -259,7 +268,8 @@ export default {
 
 <style scoped>
 .rating-section .v-icon {
-    font-size: 40px; /* 별 아이콘의 크기를 40px로 설정 */
+    font-size: 40px;
+    /* 별 아이콘의 크기를 40px로 설정 */
 }
 
 .review-form {
@@ -381,4 +391,13 @@ textarea.custom-input {
     padding: 10px 20px;
     border-radius: 30px;
 }
+
+::v-deep .custom-rating .v-icon {
+    font-size: 40px !important;
+    /* 별 크기를 40px로 설정 */
+    width: 40px !important;
+    /* 별의 너비 설정 */
+    height: 40px !important;
+    /* 별의 높이 설정 */
+  }
 </style>
