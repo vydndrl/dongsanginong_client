@@ -1,0 +1,45 @@
+name: deploy to aws s3
+# main 브랜치에 push 될 때 현재 스크립트 실행 trigger 발동.
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: source code checkout
+        uses: actions/checkout@v2
+
+      - name: setup node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: npm install
+        working-directory: .
+        # run 은 직접 사용하고자 하는 명령어.
+        run: npm install
+
+      - name: npm build
+        working-directory: .
+        run: npm run build
+
+      - name: setup aws cli
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${secrets.AWS_ACCESS_KEY}
+          aws-secret-access-key: ${secrets.AWS_SECRET}
+          aws-region: "ap-northeast-2"
+
+          # 기존 지우고 빌드 넣어주기
+      - name: clear s3 bucket
+        run: aws s3 rm s3://www.inong.shop/ --recursive
+
+      - name: deploy to s3 bucket
+        run:
+          aws s3 cp ./dist s3://www.inong.shop/ --recursive
+
+      # - name: invalidate cloudfront cache
+      #   run:
+      #     aws cloudfront create-invalidation --distribution-id EPLILOI974LXR --paths "/*"
