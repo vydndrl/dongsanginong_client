@@ -303,11 +303,15 @@ export default {
             email: this.formData.email,
           }
         );
+        console.log("axios 통과")
         this.emailStatusMessage = '코드가 전송되었습니다. 이메일을 확인해주세요.';
         this.authCodeButtonText = '이메일 인증 코드 재전송';
         this.isAuthCodeSent = true; // 인증 코드 입력 필드 표시
+        console.log("변수 저장")
         this.resetTimer(); // 기존 타이머 중지 및 새 타이머 시작
+        console.log("타이머 호출")
       } catch (error) {
+        console.log('eeeeeee2', error)
         this.emailStatusMessage =
           error.response?.data?.message || '코드 전송에 실패했습니다.';
         this.emailStatusClass = 'error-message';
@@ -335,6 +339,7 @@ export default {
           this.emailVerificationClass = 'error-message';
         }
       } catch (error) {
+        console.log('eeeeeee', error)
         this.emailVerificationMessage =
           error.response?.data?.message || '이메일 인증에 실패했습니다.';
         this.emailVerificationClass = 'error-message';
@@ -493,8 +498,10 @@ export default {
 
     resetTimer() {
       if (this.timerInterval) {
+        console.log("resettimer if문안")
         clearInterval(this.timerInterval);
       }
+      console.log("resettimer 반환 전")
       this.startTimer();
     },
 
