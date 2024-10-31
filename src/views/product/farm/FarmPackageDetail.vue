@@ -63,7 +63,7 @@
         <v-card flat>
           <v-card-subtitle class="package-title">패키지 설명</v-card-subtitle>
           <v-card-text class="package-description">
-            {{ packageProduct.productDescription }}
+            <div v-html="packageProduct.productDescription"></div>
           </v-card-text>
         </v-card>
 
@@ -84,6 +84,29 @@
       </v-col>
     </v-row>
 
+    <!-- Viewer와 Editor -->
+    <v-row>
+      <v-col cols="12">
+        <!-- 상세정보 수정하기 버튼 -->
+        <v-btn v-if="isSeller && !isEditing" color="secondary" @click="startEdit" class="edit-button">상세정보 수정하기</v-btn>
+
+        <!-- Viewer -->
+        <div v-if="!isEditing" ref="viewer"></div>
+
+        <!-- Editor -->
+        <div v-else>
+          <div ref="editor"></div>
+          <v-row class="edit-actions">
+            <v-col class="text-right">
+              <v-btn color="primary" @click="saveDetailedDescription">저장</v-btn>
+              <v-btn color="grey" @click="cancelEdit">취소</v-btn>
+            </v-col>
+          </v-row>
+        </div>
+      </v-col>
+    </v-row>
+
+
     <!-- 리뷰 목록 -->
     <h4 class="review-header">전체 리뷰({{ reviews.length }})</h4>
     <v-row v-if="paginatedReviews.length > 0" class="review-row">
@@ -103,7 +126,7 @@
           <!-- 내 리뷰면 -->
           <div class="review-title" v-if="review.memberId == this.memberId">
             <strong>{{ review.title }}</strong>&nbsp;&nbsp;
-            <span lclass="my-review" style="background-color: #eee; padding: 3px 5px; border-radius: 10px; font-size: 13px;
+            <span class="my-review" style="background-color: #eee; padding: 3px 5px; border-radius: 10px; font-size: 13px;
             margin-bottom: 5px; color: blue;">내 리뷰</span>
           </div>
           <div class="review-title" v-else>
@@ -208,6 +231,16 @@
 <script>
 import axios from 'axios';
 import ReviewUpdate from '@/views/product/review/ReviewUpdate.vue';
+import { Editor } from '@toast-ui/editor';
+import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer'; // Viewer 가져오기
+import fontSize from "tui-editor-plugin-font-size";
+import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
+import '@toast-ui/editor/dist/toastui-editor.css';
+import '@toast-ui/editor/dist/toastui-editor-viewer.css'; // Viewer CSS 가져오기
+import '@toast-ui/editor/dist/i18n/ko-kr';
+import "tui-editor-plugin-font-size/dist/tui-editor-plugin-font-size.css";
+import 'tui-color-picker/dist/tui-color-picker.css';
+import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 
 export default {
   components: {
@@ -227,8 +260,45 @@ export default {
       imagesPerPage: 2,
       deleteModal: false, // 삭제 확인 모달 상태
       memberId: localStorage.getItem('memberId'),
+      farmId: localStorage.getItem('farmId'),
       successModal: false,
+      editorInstance: null, // 에디터 인스턴스 저장
+      isEditing: false, // 편집 모드 여부
+      originalDetailedDescription: '', // 원본 상세 설명 저장
+      viewerInstance: null,
     };
+  },
+  mounted() {
+    this.initializeViewer();
+  },
+  beforeUnmount() {
+    // 컴포넌트가 파괴되기 전에 에디터 인스턴스를 파괴합니다.
+    if (this.editorInstance) {
+      this.editorInstance.destroy();
+    }
+    if (this.viewerInstance) {
+      this.viewerInstance.destroy();
+    }
+  },
+  watch: {
+    isEditing(newVal) {
+      if (!newVal) {
+        // 편집이 종료되면 Viewer를 다시 초기화
+        this.initializeViewer();
+      } else {
+        // 편집이 시작되면 Viewer 파괴
+        if (this.viewerInstance) {
+          this.viewerInstance.destroy();
+          this.viewerInstance = null;
+        }
+      }
+    },
+    'packageProduct.detailedProductDescription'() {
+      // 내용이 변경되면 Viewer를 다시 초기화
+      if (!this.isEditing) {
+        this.initializeViewer();
+      }
+    },
   },
   computed: {
     pageCount() {
@@ -247,7 +317,13 @@ export default {
     },
     isReviewOwner() {
       // 현재 로그인한 사용자의 memberId와 리뷰 작성자의 memberId 비교
-      return this.selectedReview && Number(localStorage.getItem('memberId')) === this.selectedReview.memberId;
+      return this.selectedReview && Number(this.memberId) === this.selectedReview.memberId;
+    },
+    isSeller() {
+      return (
+        this.packageProduct.farmId &&
+        Number(this.farmId) === this.packageProduct.farmId
+      );
     },
   },
   async created() {
@@ -257,6 +333,7 @@ export default {
         `${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth/detail/${packageId}`
       );
       const productData = productResponse.data;
+      console.log(productData)
       console.log(">>>>id: " + productData.discountId + "  >>>>discount: " + productData.discount + ">>>> name: " + productData.packageName);
 
       // delivery_cycle -> deliveryCycle로 변환
@@ -363,12 +440,187 @@ export default {
       }
       const finalPrice = discount ? price - discount : price;
       return parseInt(finalPrice).toLocaleString('ko-KR');
-    }
+    },
+
+     startEdit() {
+      this.isEditing = true;
+      this.originalDetailedDescription = this.packageProduct.detailedProductDescription || '';
+
+      if (this.editorInstance) {
+        // 에디터 인스턴스가 이미 있으면 초기화만 수행
+        this.editorInstance.setHTML(this.originalDetailedDescription);
+      } else {
+        this.$nextTick(() => {
+          // 에디터 초기화
+          console.log('Editor Element:', this.$refs.editor);
+          this.editorInstance = new Editor({
+            el: this.$refs.editor,
+            previewStyle: 'vertical',
+            height: '500px',
+            initialEditType: 'wysiwyg',
+            initialValue: this.originalDetailedDescription,
+            language: 'ko',
+            hooks: {
+              addImageBlobHook: this.onImageUpload, // 이미지 업로드 훅 설정
+            },
+            toolbarItems: [
+              ['heading', 'bold'],
+              ['ul', 'ol', 'task'],
+              ['image']
+            ],
+            plugins: [fontSize, colorSyntax],
+
+            customHTMLRenderer: {
+              htmlBlock: {
+                iframe(node) {
+                  return [
+                    { type: 'openTag', tagName: 'iframe', outerNewLine: true, attributes: node.attrs },
+                    { type: 'html', content: node.childrenHTML },
+                    { type: 'closeTag', tagName: 'iframe', outerNewLine: true },
+                  ];
+                }
+              }
+            }
+          });
+        });
+      }
+    },
+
+     cancelEdit() {
+      this.isEditing = false;
+      if (this.editorInstance) {
+        this.editorInstance.destroy();
+        this.editorInstance = null;
+      }
+      this.packageProduct.detailedProductDescription = this.originalDetailedDescription;
+    },
+
+    async saveDetailedDescription() {
+      const packageId = this.$route.params.packageId;
+      const accessToken = localStorage.getItem('accessToken');
+      const updatedDescription = this.editorInstance.getHTML();
+      const updateData = {
+        packageName: this.packageProduct.packageName,
+        deliveryCycle: this.packageProduct.deliveryCycle,
+        price: this.packageProduct.price,
+        deleteImageUrls: [],
+        newImageUrls: [],
+        productDescription: this.packageProduct.productDescription,
+        detailedProductDescription: updatedDescription,
+        origin: this.packageProduct.origin,
+      };
+
+      if (!this.editorInstance) {
+        console.error('에디터 인스턴스가 유효하지 않습니다.');
+        return;
+      }
+
+      try {
+        const updatedDescription = this.editorInstance.getHTML();
+        await axios.put(
+          `${process.env.VUE_APP_API_BASE_URL}/product-service/seller/packages/${packageId}/update`,
+          updateData,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              sellerId: localStorage.getItem('sellerId'),
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        this.packageProduct.detailedProductDescription = updatedDescription;
+        this.isEditing = false;
+
+        if (this.editorInstance) {
+          this.editorInstance.destroy();
+          this.editorInstance = null;
+        }
+
+        this.isEditing = false;
+      } catch (error) {
+        console.error('상세 정보 업데이트 실패:', error);
+      }
+    },
+
+    initializeViewer() {
+      if (this.viewerInstance) {
+        this.viewerInstance.destroy();
+      }
+      this.$nextTick(() => {
+        this.viewerInstance = new Viewer({
+          el: this.$refs.viewer,
+          initialValue: this.packageProduct.detailedProductDescription || '',
+          language: 'ko',
+        });
+      });
+    },
+
+
+    async uploadImage(blob) {
+      const accessToken = localStorage.getItem('accessToken');
+      const body = {
+        prefix: "Farm",
+        url: `${blob.name}`,
+      };
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      };
+
+      // presigned URL 요청
+      const response = await fetch(`${process.env.VUE_APP_API_BASE_URL}/product-service/api/upload/presigned-url`, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body),
+      });
+      const contentType = response.headers.get("content-type");
+      let presignedUrl;
+      let imageUrl;
+
+      if (contentType && contentType.includes("application/json")) {
+        // 응답이 JSON인 경우
+        const result = await response.json();
+        presignedUrl = result.url;
+        imageUrl = result.imageUrl;
+      } else {
+        // 응답이 텍스트인 경우
+        const textResult = await response.text();
+        presignedUrl = textResult;
+        // 이미지 URL은 presigned URL에서 '?' 이전 부분
+        imageUrl = presignedUrl.split("?")[0];
+      }
+
+      // 이미지 업로드
+      await fetch(presignedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": blob.type,
+        },
+        body: blob,
+      });
+
+      return imageUrl; // 업로드된 이미지의 최종 URL 반환
+    },
+
+    async onImageUpload(blobOrBlobArray, callback) {
+      const blobs = Array.isArray(blobOrBlobArray) ? blobOrBlobArray : [blobOrBlobArray];
+      for (const blob of blobs) {
+        try {
+          const imageUrl = await this.uploadImage(blob);
+          callback(imageUrl, blob.name);
+        } catch (error) {
+          console.error('이미지 업로드 실패:', error);
+        }
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
+@import '~@toast-ui/editor/dist/toastui-editor.css';
+
 .review-header {
   text-align: left;
   width: 100%;
@@ -623,10 +875,12 @@ export default {
   width: 100%;
   margin-top: 20px;
 }
+
 .modal-title {
   font-size: 16px;
   text-align: center;
 }
+
 .delete-confirm-btn {
   background-color: #BCC07B;
   color: black;
@@ -635,6 +889,7 @@ export default {
   font-size: 13px;
   max-width: 200px;
 }
+
 .cancel-btn {
   background-color: #e0e0e0;
   color: black;
@@ -643,6 +898,7 @@ export default {
   font-size: 13px;
   max-width: 200px;
 }
+
 .submit-btn {
     margin-left: 10px;
     margin-top: 8px;
@@ -650,6 +906,7 @@ export default {
     color: black;
     border-radius: 50px;
 }
+
 .sale-style {
     background-color: rgb(245, 77, 77); 
     color: white; 
@@ -658,5 +915,19 @@ export default {
     padding-bottom: 3px;
     padding-top: 5px;
     font-size: 12px;
+}
+
+/* Styles for Edit and Save buttons */
+.edit-button {
+  margin-top: 10px;
+  background-color: #BCC07B;
+  color: black;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.edit-actions {
+  margin-top: 10px;
 }
 </style>
