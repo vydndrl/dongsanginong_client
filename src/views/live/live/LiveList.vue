@@ -487,6 +487,7 @@ export default {
             console.log(">>>>>>>>> token: " + token + " >>>>>>>>>> sessiongId" + live.sessionId);
 
             const OV = new OpenVidu();
+            OV.setOpenViduServerUrl('https://api.inong.shop/openvidu');
             const session = OV.initSession();
             live.session = session; // 세션을 저장해 해제할 수 있도록 함 
 
