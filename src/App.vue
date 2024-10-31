@@ -54,5 +54,6 @@ export default {
 .font-style {
   font-family: 'NanumBarunGothic';
 }
+
 </style>
 
