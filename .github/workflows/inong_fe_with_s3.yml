@@ -27,6 +27,9 @@ jobs:
           VUE_APP_MY_URL: ${{ secrets.MY_URL }}
           VUE_APP_KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
           VUE_APP_KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+          VUE_APP_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          VUE_APP_GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          VUE_APP_GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI}}
         working-directory: .
         run: npm run build
 
