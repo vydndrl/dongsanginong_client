@@ -90,7 +90,7 @@
     <v-dialog v-model="alertModal" max-width="260px">
       <v-card class="modal" style="padding: 10px; padding-right: 20px; text-align: center;">
         <v-card-text>{{ alertMessage }}</v-card-text>
-        <v-btn @click="closeAlertModal" class="submit-btn">close</v-btn>
+        <v-btn @click="closeAlertModal" class="submit-btn">닫기</v-btn>
       </v-card>
     </v-dialog>
   </div>

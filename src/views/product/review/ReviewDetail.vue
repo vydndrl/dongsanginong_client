@@ -62,11 +62,10 @@
       </v-row>
 
       <!-- 삭제 확인 모달 -->
-      <v-dialog v-model="deleteModal" max-width="400">
+      <v-dialog v-model="deleteModal" max-width="300">
         <v-card class="modal">
-          <v-card-title class="modal-title">정말 삭제하시겠습니까?</v-card-title>
-          <v-card-actions class="modal-actions">
-            <v-spacer></v-spacer>
+          <v-card-title class="modal-title">정말 삭제하시겠습니까?<br><br></v-card-title>
+          <v-card-actions class="modal-actions justify-center">
             <v-btn @click="confirmDelete" class="delete-confirm-btn">삭제</v-btn>
             <v-btn @click="closeDeleteModal" class="cancel-btn">닫기</v-btn>
           </v-card-actions>
@@ -77,7 +76,7 @@
       <v-dialog v-model="alertModal" max-width="260px">
         <v-card class="modal" style="padding: 10px; padding-right: 20px; text-align: center;">
           <v-card-text>리뷰가 삭제되었습니다.</v-card-text>
-          <v-btn @click="closeAlertModal" class="submit-btn">close</v-btn>
+          <v-btn @click="closeAlertModal" class="submit-btn">닫기</v-btn>
         </v-card>
       </v-dialog>
 
@@ -336,20 +335,28 @@ export default {
   text-align: center;
   font-weight: bold;
   font-size: 16px;
-}
-
-.modal-actions {
-  justify-content: space-between;
   margin-top: 10px;
 }
 
-.delete-confirm-btn,
-.cancel-btn {
+.modal-actions {
+  margin-top: 10px;
+  gap: 10px; /* 버튼 사이 간격 추가 */
+}
+
+.delete-confirm-btn{
   background-color: #BCC07B;
   color: black;
   border-radius: 50px;
   padding: 8px 30px;
 }
+
+.cancel-btn {
+  background-color: #e2e2e2;
+  color: black;
+  border-radius: 50px;
+  padding: 8px 30px;
+}
+
 
 .submit-btn {
   margin-left: 10px;

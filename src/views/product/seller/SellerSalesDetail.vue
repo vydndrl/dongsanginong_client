@@ -84,7 +84,7 @@
             <v-card-text>
                 ⚠️ 시작 날짜가 종료 날짜보다 나중일 수 없습니다.
             </v-card-text>
-            <div style="text-align: right; padding: 20px;">
+            <div style="text-align: center; padding: 20px;">
                 <v-btn color="deep_green" style="width:10%; border-radius: 50px" @click="this.dateCheckDialog = false">
                     닫기
                 </v-btn>

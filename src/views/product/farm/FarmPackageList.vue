@@ -25,7 +25,7 @@
           <v-card 
             elevation="0" 
             class="v-card" 
-            style="width: 100%; height: 470px; padding: 0px;"
+            style="width: 100%; height: 100%; padding: 0px;"
             @click="goToPackageDetail(packageProduct.packageId)"
           >
             <v-img
@@ -135,6 +135,7 @@ export default {
     };
   },
   mounted() {
+    this.fetchWishlistItems();
     this.farmId = this.$route.params.farmId;
 
     // 스크롤 이벤트 리스너 추가 (debounce 적용)
@@ -148,6 +149,21 @@ export default {
     window.removeEventListener('scroll', this.scrollPagination);
   },
   methods: {
+    async fetchWishlistItems() {
+            try {
+                const memberId = localStorage.getItem('memberId');
+                if (memberId) {
+                    const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/wishlist`);
+
+                    const wishlistProductIds = response.data.map(product => product.id);
+                    wishlistProductIds.forEach(id => {
+                        this.wishlistItems[id] = true;
+                    });
+                }
+            } catch (error) {
+                console.error('위시리스트 정보를 가져오는데 실패했습니다:', error);
+            }
+        },
     async loadMorePackages() {
       if (this.isLoading || this.isLastPage) return;
 

@@ -38,6 +38,13 @@
 
             <!-- 카테고리 -->
             <v-row class="category-buttons" justify="center">
+                <v-btn class="cat-btn" :class="{ 'active-cat-btn': category === '전체' }" @click="setCategory('전체')">
+                    <div class="icon-text-wrapper">
+                        <img src="all.png" width="50" height="50"
+                            style="margin-bottom: -18px; transform: scale(0.8);"><br />
+                        <span style="font-size: 14px;">전체</span>
+                    </div>
+                </v-btn>
                 <v-btn class="cat-btn" :class="{ 'active-cat-btn': category === '과일' }" @click="setCategory('과일')">
                     <div class="icon-text-wrapper">
                         <img src="https://simg.ssgcdn.com/trans.ssg?src=/cmpt/banner/202403/2024031818080361517067449706_661.png&amp;w=84&amp;h=84&amp;edit=c&amp;t=bd90620ede2db29ee3ac2b9a4faee217e215ee4b"
@@ -296,7 +303,38 @@ export default {
             this.currentPage = 0;
             this.isLastPage = false;
             this.farmList = [];
-            this.onSearch();
+            if (cat === '전체') {
+                this.loadAllFarms();
+            } else {
+                this.onSearch();
+            }
+        },
+        async loadAllFarms() {
+            try {
+                this.isLoading = true;
+                const params = {
+                    page: this.currentPage,
+                    size: this.pageSize,
+                    sort: this.sortOptionMap.get(this.sortOption),
+                };
+
+                const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/farm/no-auth`, { params });
+                this.farmList = response.data.content;
+                this.isLastPage = response.data.last;
+
+                for (let i = 0; i < this.farmList.length; ++i) {
+                    this.likes.set(this.farmList[i].id, this.farmList[i].isLiked ? 1 : 0);
+                    this.likeCount.set(this.farmList[i].id, this.farmList[i].favoriteCount);
+
+                    const packageResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth/for-sale/${this.farmList[i].id}`);
+                    this.farmList[i] = { ...this.farmList[i], packages: packageResponse.data.content.slice(0, 10) };
+                }
+
+                this.isLoading = false;
+            } catch (error) {
+                console.error(error);
+                this.isLoading = false;
+            }
         },
         goToPackage(farmId) {
             console.log(`Navigating to package for farm ID: ${farmId}`);

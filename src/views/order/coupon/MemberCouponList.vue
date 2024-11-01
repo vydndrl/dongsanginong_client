@@ -92,7 +92,7 @@ export default {
                 // 유효기간이 지난 쿠폰을 필터링하고 유효기간이 임박한 순서대로 정렬
                 const currentDateTime = new Date();
                 this.couponList = response.data
-                    .filter(coupon => new Date(coupon.expiration) > currentDateTime)
+                    .filter(coupon => new Date(coupon.expiration) > currentDateTime && coupon.useYn === 'N')
                     .sort((a, b) => new Date(a.expiration) - new Date(b.expiration));
                 this.checkIfLastPage();
             } catch (error) {
@@ -194,7 +194,8 @@ export default {
 
 .coupon-name {
     font-size: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: -15px;
     white-space: pre-wrap; 
     word-wrap: break-word;
     overflow-wrap: break-word;
