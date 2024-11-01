@@ -162,7 +162,9 @@ export default {
             console.log("화면들어옴 sessionId: ", sessionId);
             // this.OV = new OpenVidu('https://api.inong.shop/openvidu');
             this.OV = new OpenVidu();
+            console.log(">>>>>새로운 openvidu객체: ", this.ov);
             this.session = this.OV.initSession();
+            console.log(">>>>>initsession: ", this.session);
 
             // 스트림 생성 및 제거 처리
             this.session.on("streamCreated", ({ stream }) => {
@@ -185,8 +187,10 @@ export default {
             
             // 백엔드에서 토큰 받아와서 세션에 연결
             const token = await this.getToken(sessionId);
+            console.log(">>>>>받은 토큰 확인 : ", token);
+
             this.session.connect(token, { clientData: this.myUserName }).then(() => {
-                console.log("isPublisher: ", this.isPublisher);
+                console.log("i>>>>>sPublisher: ", this.isPublisher);
                 if (this.isPublisher) {
                     // 방송자일 경우 자신의 비디오와 오디오를 송출
                     const publisher = this.OV.initPublisher(undefined, {
