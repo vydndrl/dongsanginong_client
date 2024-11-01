@@ -9,7 +9,7 @@
                     class="item-img"
                     @click="this.$router.push(`/product/${item.id}`)"
                     />
-                    <span style="font-size:medium; font-weight: 400;" v-if="item.packageName.length > 10"> {{
+                    <span style="font-size:medium; font-weight: 400;" v-if="item.packageName.length > 20"> {{
                         item.packageName.substring(0, 10)
                     }}... </span>
                     <span style="font-size:medium; font-weight: 400;" v-else> {{ item.packageName }}</span>
