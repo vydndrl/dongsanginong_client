@@ -22,12 +22,15 @@
                 <div class="label" style="padding-bottom: 20px;">
                     <div class="form-group">
                         <label style="font-size: 16px; font-weight: 400; margin-left: 10%;">현재 전화번호&nbsp;&nbsp;&nbsp;</label>
-                        <input type="password" v-model="currentPhone" placeholder="현재 전화번호를 입력하세요." />
+                        <input type="text" v-model="currentPhone" placeholder="현재 전화번호를 입력하세요."
+                               @input="formatPhoneNumber('currentPhone')" maxlength="13" />
                     </div>
                     <div class="form-group">
                         <label style="font-size: 16px; font-weight: 400; margin-left: 10%;">&nbsp;&nbsp;&nbsp;새 전화번호&nbsp;&nbsp;&nbsp;</label>
-                        <input type="password" v-model="newPhone" placeholder="새 전화번호를 입력하세요."/>
+                        <input type="text" v-model="newPhone" placeholder="새 전화번호를 입력하세요."
+                               @input="formatPhoneNumber('newPhone')" maxlength="13" />
                     </div>
+                    
                 </div>
                 <div class="footer">
                     <div class="update-container">
@@ -136,6 +139,24 @@ export default {
         };
     },
     methods: {
+            formatPhoneNumber(field) {
+            // 전화번호에서 숫자만 추출
+            let phone = this[field].replace(/\D/g, '');
+            
+            // 11자 초과 시 자르기
+            if (phone.length > 11) {
+                phone = phone.slice(0, 11);
+            }
+
+            // 포맷팅 (000-0000-0000 형태로)
+            if (phone.length < 4) {
+                this[field] = phone;
+            } else if (phone.length < 8) {
+                this[field] = `${phone.slice(0, 3)}-${phone.slice(3)}`;
+            } else {
+                this[field] = `${phone.slice(0, 3)}-${phone.slice(3, 7)}-${phone.slice(7)}`;
+            }
+        },
         // 전화번호 변경
         async fetchMemberInfo() {
             this.loading = true;
@@ -155,7 +176,7 @@ export default {
             }
         },
         async handleUpdatePhone() {
-            if (this.currentPhone !== this.memberInfo.phone) {
+            if (this.currentPhone.replace(/\D/g, '') !== this.memberInfo.phone.replace(/\D/g, '')) {    
                 this.modalMessage = "전화번호가 일치하지 않습니다.";
             } else if (!this.newPhone) {
                 this.modalMessage = "변경하실 전화번호를 입력해주세요.";

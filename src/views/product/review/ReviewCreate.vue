@@ -67,7 +67,7 @@
   <!-- 에러 모달 -->
   <v-dialog v-model="alertModal" max-width="380px">
     <v-card class="modal" style="padding: 15px; text-align: center;">
-      <v-card-text style="text-align: center;">{{ alertMessage }}</v-card-text>
+      <v-card-text style="text-align: center; white-space: pre-line;">{{ alertMessage }}</v-card-text>
       <v-btn @click="alertModal = false;" class="submit-btn" style="margin-top: -2px; margin-right: 10px;">확인</v-btn>
     </v-card>
   </v-dialog>
@@ -208,7 +208,7 @@ export default {
 
         if (!response.ok) {
           const errorData = await response.json();
-          if (errorData.message === '이 상품에 대한 리뷰는 이미 존재합니다.') {
+          if (errorData.message === '이 상품에 대한 리뷰는\n 이미 존재합니다.') {
             this.alertMessage = errorData.message; // 에러 메시지를 모달에 출력
             this.alertModal = true;
           }
@@ -217,7 +217,7 @@ export default {
         }
       } catch (error) {
         console.error('리뷰 생성 실패:', error);
-        this.alertMessage = '리뷰 생성 중 오류가 발생했습니다.';
+        this.alertMessage = '리뷰 생성 중 \n 오류가 발생했습니다.';
         this.alertModal = true; // 에러 모달 열기
       }
     },

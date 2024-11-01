@@ -52,7 +52,8 @@
     <!-- 농장 설명 -->
     <div class="farm-intro">
       <h4 class="left-align">농장 설명을 적어주세요.</h4><br />
-      <textarea v-model="farmIntro" class="intro-textarea"></textarea>
+      <textarea v-model="farmIntro" class="intro-textarea" maxlength="50"></textarea>
+      <div class="char-count">{{ farmIntro.length }}/50</div>
     </div>
 
     <!-- 제출 버튼 -->
@@ -627,5 +628,12 @@ export default {
 .loading-message {
   font-size: 14px;
   color: #666;
+}
+
+.char-count {
+  font-size: 12px;
+  color: #666;
+  text-align: right;
+  margin-top: 5px;
 }
 </style>

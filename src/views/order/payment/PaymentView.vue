@@ -450,7 +450,11 @@ export default {
 
             // 할인 가격
             console.log(this.packageProduct);
-            this.discountedPrice = this.packageProduct.discount == undefined ? 0 : this.packageProduct.discount;
+            if (this.packageProduct.discountActive) {
+            this.discountedPrice = this.packageProduct.discount != undefined ? this.packageProduct.discount : 0;
+        } else {
+            this.discountedPrice = 0;
+        }
 
             // totalAmount 계산
             this.totalAmount = this.packageProduct.price - this.discountedPrice;
