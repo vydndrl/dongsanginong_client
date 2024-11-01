@@ -98,7 +98,7 @@
   <!-- 오류 메시지 모달 -->
   <v-dialog v-model="errorModal" max-width="300px">
     <v-card class="modal" style="padding: 10px; padding-right: 20px; text-align: center;">
-      <v-card-text>{{ errorMessage }}</v-card-text>
+      <v-card-text style="white-space: pre-line;">{{ errorMessage }}</v-card-text>
       <v-btn @click="closeErrorModal" class="submit-btn">닫기</v-btn>
     </v-card>
   </v-dialog>
@@ -259,10 +259,10 @@ export default {
             },
           }
         );
-        this.alertMessage = "할인이 성공적으로 생성되었습니다!";
+        this.alertMessage = "할인이 성공적으로\n생성되었습니다!";
         this.alertModal = true;
       } catch (error) {
-        this.errorMessage = "선택하신 상품이 다른 할인을 이미 가지고 있습니다.";
+        this.errorMessage = "선택하신 상품이 다른 할인을\n 이미 가지고 있습니다.";
         this.errorModal = true;
         console.error('할인 생성 중 오류 발생:', error);
       }
