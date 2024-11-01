@@ -486,7 +486,8 @@ export default {
             const token = await this.getToken(live.sessionId);
             console.log(">>>>>>>>> token: " + token + " >>>>>>>>>> sessiongId" + live.sessionId);
 
-            const OV = new OpenVidu('https://api.inong.shop/openvidu');
+            // const OV = new OpenVidu('https://api.inong.shop/openvidu');
+            const OV = new OpenVidu();
             const session = OV.initSession();
             live.session = session; // 세션을 저장해 해제할 수 있도록 함 
 

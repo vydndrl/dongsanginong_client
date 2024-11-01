@@ -160,7 +160,8 @@ export default {
     methods: {
         async joinSession(sessionId) {
             console.log("화면들어옴 sessionId: ", sessionId);
-            this.OV = new OpenVidu('https://api.inong.shop/openvidu');
+            // this.OV = new OpenVidu('https://api.inong.shop/openvidu');
+            this.OV = new OpenVidu();
             this.session = this.OV.initSession();
 
             // 스트림 생성 및 제거 처리
