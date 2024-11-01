@@ -166,11 +166,13 @@ export default {
 
             // 스트림 생성 및 제거 처리
             this.session.on("streamCreated", ({ stream }) => {
+                console.log(">>>>>>streamCreated에 들어옴")
                 const subscriber = this.session.subscribe(stream);
                 this.subscribers.push(subscriber);
             });
 
             this.session.on("streamDestroyed", ({ stream }) => {
+              console.log(">>>>>>streamDestroyed에 들어옴")
               const index = this.subscribers.indexOf(stream.streamManager);
               if (index >= 0) {
                   this.subscribers.splice(index, 1);
