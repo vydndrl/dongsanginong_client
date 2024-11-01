@@ -160,8 +160,9 @@ export default {
     methods: {
         async joinSession(sessionId) {
             console.log("화면들어옴 sessionId: ", sessionId);
-            this.OV = new OpenVidu("https://api.inong.shop:4443/");
-            this.OV.forceSecure = true;
+            // this.OV = new OpenVidu("https://api.inong.shop:4443/");
+            this.OV = new OpenVidu("https://api.inong.shop/openvidu/");
+            // this.OV.forceSecure = true;
             // this.OV = new OpenVidu();
             console.log(">>>>>새로운 openvidu객체: ", this.OV);
             this.session = this.OV.initSession();
@@ -190,9 +191,9 @@ export default {
             let token = await this.getToken(sessionId);
             console.log(">>>>>받은 토큰 확인 : ", token);
             // Change ws:// to wss:// if needed
-            if (token.startsWith("ws://")) {
-                token = token.replace("ws://", "wss://");
-            }
+            // if (token.startsWith("ws://")) {
+            //     token = token.replace("ws://", "wss://");
+            // }
             this.session.connect(token, { clientData: this.myUserName }).then(() => {
                 console.log("i>>>>>sPublisher: ", this.isPublisher);
                 if (this.isPublisher) {
