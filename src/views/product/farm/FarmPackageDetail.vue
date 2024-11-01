@@ -88,7 +88,7 @@
     <v-row>
       <v-col cols="12">
         <!-- 상세정보 수정하기 버튼 -->
-        <v-btn v-if="isSeller && !isEditing" color="secondary" @click="startEdit" class="edit-button">상세정보 수정하기</v-btn>
+        <v-btn v-if="isSeller && !isEditing" @click="startEdit" class="edit-button">상세정보 수정하기</v-btn>
 
         <!-- Viewer -->
         <div v-if="!isEditing" ref="viewer"></div>
@@ -98,8 +98,8 @@
           <div ref="editor"></div>
           <v-row class="edit-actions">
             <v-col class="text-right">
-              <v-btn color="primary" @click="saveDetailedDescription">저장</v-btn>
-              <v-btn color="grey" @click="cancelEdit">취소</v-btn>
+              <v-btn class="delete-confirm-btn" @click="saveDetailedDescription">저장</v-btn>
+              <v-btn class="cancel-btn" @click="cancelEdit">취소</v-btn>
             </v-col>
           </v-row>
         </div>
@@ -888,6 +888,7 @@ export default {
   padding: 10px 20px;
   font-size: 13px;
   max-width: 200px;
+  margin-right: 10px;
 }
 
 .cancel-btn {

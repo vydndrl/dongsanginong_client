@@ -31,7 +31,7 @@
             <tr v-for="(product, index) in products" :key="product.id">
               <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td> <!-- 인덱스 계산 -->
               <td>{{ product.packageName }}</td>
-              <td>{{ product.price }}</td>
+              <td>{{ product.price.toLocaleString() }}</td> <!-- 금액에 3자리 콤마 추가 -->
               <td>{{ product.productCode }}</td> <!-- 고유번호 출력 -->
               <td>
                 <v-btn @click="goToEditPage(product.id)" class="manage-btn edit-btn">수정</v-btn>
