@@ -160,8 +160,8 @@ export default {
     methods: {
         async joinSession(sessionId) {
             console.log("화면들어옴 sessionId: ", sessionId);
-            // this.OV = new OpenVidu("https://api.inong.shop:4443/");
-            this.OV = new OpenVidu();
+            this.OV = new OpenVidu("https://api.inong.shop:4443/");
+            // this.OV = new OpenVidu();
             console.log(">>>>>새로운 openvidu객체: ", this.OV);
             this.session = this.OV.initSession();
             console.log(">>>>>initsession: ", this.session);
@@ -169,13 +169,13 @@ export default {
             // 스트림 생성 및 제거 처리
             this.session.on("streamCreated", ({ stream }) => {
                 console.log(">>>>>>streamCreated에 들어옴")
-                const subscriber = this.session.subscribe(stream);
+                let subscriber = this.session.subscribe(stream, undefined);
                 this.subscribers.push(subscriber);
             });
 
             this.session.on("streamDestroyed", ({ stream }) => {
               console.log(">>>>>>streamDestroyed에 들어옴")
-              const index = this.subscribers.indexOf(stream.streamManager);
+              const index = this.subscribers.indexOf(stream.streamManager, 0);
               if (index >= 0) {
                   this.subscribers.splice(index, 1);
               }
