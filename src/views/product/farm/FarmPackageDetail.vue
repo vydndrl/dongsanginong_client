@@ -80,9 +80,19 @@
     <!-- 정기구독 신청 버튼을 오른쪽으로 이동 -->
     <v-row>
       <v-col class="right-aligned">
-        <v-btn class="subscription-btn" @click="subscribe">정기구독 신청</v-btn>
+        <v-btn class="subscription-btn" @click="handleSubscriptionClick">정기구독 신청</v-btn>
       </v-col>
     </v-row>
+
+    <!-- 판매자 구매 제한 모달 -->
+    <v-dialog v-model="sellerRestrictionModal" max-width="300" persistent>
+      <v-card class="modal" style="padding: 10px; text-align: center;">
+        <v-card-text>판매자는 상품을 <br> 구매할 수 없습니다.</v-card-text>
+        <v-card-actions class="modal-actions" style="justify-content: center;">
+          <v-btn @click="closeSellerRestrictionModal" class="submit-btn">확인</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <!-- Viewer와 Editor -->
     <v-row>
@@ -266,6 +276,8 @@ export default {
       isEditing: false, // 편집 모드 여부
       originalDetailedDescription: '', // 원본 상세 설명 저장
       viewerInstance: null,
+      sellerRestrictionModal: false, // 판매자 제한 모달 상태
+      role: localStorage.getItem('role'), // role 정보 추가
     };
   },
   mounted() {
@@ -353,6 +365,18 @@ export default {
   },
 
   methods: {
+    handleSubscriptionClick() {
+      if (this.role === 'MEMBER') {
+        this.subscribe();
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>", this.role);
+      } else {
+        this.sellerRestrictionModal = true;
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>", this.role);
+      }
+    },
+    closeSellerRestrictionModal() {
+      this.sellerRestrictionModal = false;
+    },
     subscribe() {
       this.$router.push(`/product/${this.packageProduct.id}/payment`)
     },
