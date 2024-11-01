@@ -78,7 +78,7 @@
     <v-dialog v-model="failModal" max-width="300px">
         <v-card class="modal" style="align-items: center; text-align: center; height: 160px; padding-bottom: 20px; 
         overflow-y: hidden;">
-            <v-card-text style="margin-top: 10%;">⚠️ 결제 수단 등록에 실패했습니다.</v-card-text>
+            <v-card-text style="margin-top: 5%;">⚠️ 결제 수단 등록에 실패했습니다.</v-card-text>
             <v-btn @click="closeWarningAndReload" class="submit-btn">닫기</v-btn>
         </v-card>
     </v-dialog>
