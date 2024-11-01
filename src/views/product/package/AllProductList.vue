@@ -77,7 +77,7 @@
                             <span style="font-size: 14px;">{{ wishlistItems[pkg.id] ? '위시리스트 취소' : '위시리스트 담기' }}</span>
                         </v-btn>
                         <v-card-text style="padding-left: 0px;">
-                            <span style="font-size:medium; font-weight: 400;" v-if="pkg.packageName.length > 10"> {{
+                            <span style="font-size:medium; font-weight: 400;" v-if="pkg.packageName.length > 15"> {{
                                 pkg.packageName.substring(0, 10)
                             }}... </span>
                             <span style="font-size:medium; font-weight: 400;" v-else> {{ pkg.packageName }}</span>
