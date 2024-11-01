@@ -21,7 +21,7 @@
                     </v-btn>
 
                     <div style="margin-top: 10px; margin-bottom: -10px;">
-                        <span style="font-size: medium; color: black;" v-if="item.packageName.length > 10"> {{
+                        <span style="font-size: medium; color: black;" v-if="item.packageName.length > 20"> {{
                         item.packageName.substring(0, 10)
                     }}... </span>
                     <span style="font-size: medium; color: black;" v-else> {{ item.packageName }}</span>

@@ -39,12 +39,8 @@
                 </v-col>
                 <v-col cols="4">
                     <form class="searchbar">
-                        <input 
-                            style="width:100%; margin-left: 15px;" 
-                            placeholder="구독 패키지를 검색해보세요!"
-                            v-model="searchQuery" 
-                            @input="onSearch"
-                        />
+                        <input style="width:100%; margin-left: 15px;" placeholder="구독 패키지를 검색해보세요!"
+                            v-model="searchQuery" @input="onSearch" />
                         <button type="submit" @click.prevent="onSearch">
                             <img style="margin-right:15px; margin-top: 8px"
                                 src="https://d3cpiew7rze14b.cloudfront.net/assets/svg/Search-icon-24x-24_qnmx4o57C.svg"
@@ -52,8 +48,8 @@
                         </button>
                     </form>
                 </v-col>
-                
-                
+
+
             </v-row>
 
             <v-container class="d-flex custom-card-container">
@@ -77,14 +73,16 @@
                             <span style="font-size: 14px;">{{ wishlistItems[pkg.id] ? '위시리스트 취소' : '위시리스트 담기' }}</span>
                         </v-btn>
                         <v-card-text style="padding-left: 0px;">
-                            <span style="font-size:medium; font-weight: 400;" v-if="pkg.packageName.length > 15"> {{
+                            <span style="font-size:medium; font-weight: 400;" v-if="pkg.packageName.length > 20"> {{
                                 pkg.packageName.substring(0, 10)
-                            }}... </span>
+                                }}... </span>
                             <span style="font-size:medium; font-weight: 400;" v-else> {{ pkg.packageName }}</span>
                             <div class="item-info" v-if="pkg.discountId != null && pkg.discountActive == true">
-                                <p style="text-decoration: line-through; color: #999; font-size: 14px;">{{ formatPrice(pkg.price) }}</p>
+                                <p style="text-decoration: line-through; color: #999; font-size: 14px;">{{
+                                    formatPrice(pkg.price) }}</p>
                                 <div style="margin-bottom: 2px;">
-                                    <span style="color:darkgreen; font-size:medium;">{{ formatPrice(pkg.price - pkg.discount) }}&nbsp;&nbsp;</span>
+                                    <span style="color:darkgreen; font-size:medium;">{{ formatPrice(pkg.price -
+                                        pkg.discount) }}&nbsp;&nbsp;</span>
                                     <span class="sale-style">SALE</span>
                                 </div>
                                 <p style="color:#999; font-size: small;"> 1회 제공 금액 {{
@@ -345,7 +343,8 @@ export default {
     top: 37%;
     right: -10px;
     transform: translateY(-50%);
-    pointer-events: none; /* 클릭 방지 */
+    pointer-events: none;
+    /* 클릭 방지 */
 }
 
 .searchbar {
@@ -434,6 +433,7 @@ export default {
         transform: translate(-50%, -100px) scale(0);
     }
 }
+
 .banner-img {
     object-fit: cover;
     width: 100%;
@@ -441,9 +441,10 @@ export default {
     height: 100%;
     /* 부모의 높이에 맞추기 */
 }
+
 .sale-style {
-    background-color: rgb(245, 77, 77); 
-    color: white; 
+    background-color: rgb(245, 77, 77);
+    color: white;
     padding-right: 7px;
     padding-left: 7px;
     padding-bottom: 3px;
