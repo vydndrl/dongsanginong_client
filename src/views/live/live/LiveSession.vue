@@ -161,6 +161,7 @@ export default {
         async joinSession(sessionId) {
             console.log("화면들어옴 sessionId: ", sessionId);
             this.OV = new OpenVidu("https://api.inong.shop:4443/");
+            this.OV.forceSecure = true;
             // this.OV = new OpenVidu();
             console.log(">>>>>새로운 openvidu객체: ", this.OV);
             this.session = this.OV.initSession();
