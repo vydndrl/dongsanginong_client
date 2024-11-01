@@ -187,7 +187,7 @@ export default {
             });
             
             // 백엔드에서 토큰 받아와서 세션에 연결
-            const token = await this.getToken(sessionId);
+            let token = await this.getToken(sessionId);
             console.log(">>>>>받은 토큰 확인 : ", token);
             // Change ws:// to wss:// if needed
             if (token.startsWith("ws://")) {
