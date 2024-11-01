@@ -30,8 +30,8 @@
         <tbody>
           <tr v-for="(discount) in paginatedDiscounts" :key="discount.id" @click="openActionModal(discount)">
             <td>{{ truncateProductName(discount.productName) }}</td>
-            <td>{{ discount.productPrice }}원</td>
-            <td>{{ discount.discountPrice }}원</td>
+            <td>{{ discount.productPrice.toLocaleString() }}원</td>
+            <td>{{ discount.discountPrice.toLocaleString() }}원</td>
             <td>{{ formatDateTime(discount.startAt) }}</td>
             <td>{{ formatDateTime(discount.endAt) }}</td>
             <td>{{ discount.discountActive ? "활성화" : "비활성화" }}</td>
