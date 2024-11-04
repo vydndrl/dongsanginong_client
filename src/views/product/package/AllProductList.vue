@@ -437,7 +437,7 @@ export default {
 }
 
 .banner-img {
-    object-fit: contain;
+    object-fit: cover;
     width: 100%;
     /* 부모의 너비에 맞추기 */
     height: 100%;
