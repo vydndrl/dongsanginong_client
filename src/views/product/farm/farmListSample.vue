@@ -299,15 +299,15 @@ export default {
             return this.topFarmList.slice(start, end);
         },
         setCategory(cat) {
-            this.category = cat;
+            if (cat === '전체') {
+                this.category = '';
+            } else {
+                this.category = cat;
+            }
             this.currentPage = 0;
             this.isLastPage = false;
             this.farmList = [];
-            if (cat === '전체') {
-                this.loadAllFarms();
-            } else {
-                this.onSearch();
-            }
+            this.onSearch();
         },
         async loadAllFarms() {
             try {
