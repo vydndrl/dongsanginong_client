@@ -112,6 +112,7 @@ export default {
       defaultBanner: '/baseBannerImage.png', // 기본 배너 이미지
       defaultProfile: '', // 기본 프로필 이미지
       alertModal: false,
+      farmId: '',
 
       // Cropper 관련 데이터
       cropModal: false,
@@ -232,7 +233,10 @@ export default {
           categories: this.selectedCategories,
         };
 
-        await axios.post(`${process.env.VUE_APP_API_BASE_URL}/product-service/farm/create`, farmData);
+        const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/product-service/farm/create`, farmData);
+
+        const farmId = response.data.id;
+        localStorage.setItem('farmId', farmId);
         this.alertModal = true; // 모달을 표시
       } catch (error) {
         console.error('농장 생성 실패:', error);
