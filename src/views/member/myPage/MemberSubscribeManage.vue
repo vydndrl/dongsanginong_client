@@ -84,15 +84,15 @@
     </v-dialog>
 
     <!-- 구독취소 확인 모달 -->
-    <v-dialog v-model="cancelSub" max-width="570">
+    <v-dialog v-model="cancelSub" max-width="540">
         <v-card style="padding: 20px;">
             <v-card-title class="modal-title" style="font-size: 20px; font-weight: bold;">
                 정기 구독 패키지 구독 취소
             </v-card-title>
             <v-card-text class="modal-text" style="text-align: center;">
-                정기 구독을 해지하면 등록한 회원 정보 및 결제 정보가 모두 삭제됩니다. <br>
-                또한, 구독이 취소되어도 다음 결제일 전까지 <br>
-                정기 배송일에 상품을 받아보실 수 있습니다. <br>
+                정기 구독을 해지하면 정보가 모두 삭제됩니다.<br>
+                또한, 구독이 취소되어도 다음 결제일 전까지<br>
+                정기 배송일에 상품을 받아보실 수 있습니다. <br><br>
                 그래도 취소하시겠습니까?
             </v-card-text>
             <v-card-actions class="modal-actions" style="justify-content: center;">
@@ -344,6 +344,7 @@ export default {
   padding: 10px 20px;
   font-size: 14px;
   max-width: 200px;
+  padding-bottom: 30px !important;
 }
 .cancel-btn {
   background-color: #e0e0e0;
@@ -352,5 +353,6 @@ export default {
   padding: 10px 20px;
   font-size: 14px;
   max-width: 200px;
+  padding-bottom: 30px !important;
 }
 </style>
