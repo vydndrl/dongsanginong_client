@@ -316,6 +316,14 @@ textarea.custom-input {
 }
 
 .custom-button {
+  background-color: #BCC07B;
+  color: black !important;
+  transition: background-color 0.3s ease;
+  border-radius: 50px;
+}
+
+.custom-close-button{
+  background-color: #e0e0e0e0;
   color: black !important;
   transition: background-color 0.3s ease;
   border-radius: 50px;
