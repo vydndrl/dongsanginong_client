@@ -40,9 +40,9 @@
                         <input type="file" ref="fileInput" class="hidden" @change="handleFileSelection" multiple />
                     </div>
 
-                    <!-- 선택된 파일 미리보기 -->
+                    <!-- 파일 미리보기 -->
                     <div v-if="filePreviews.length">
-                        <h3>선택된 파일:</h3>
+                        <p style="font-weight: 400;">선택된 파일:</p>
                         <ul class="preview-list">
                             <li v-for="(preview, index) in filePreviews" :key="index" class="preview-container">
                                 <div class="image-wrapper">
@@ -124,14 +124,13 @@ export default {
     methods: {
         handleFileSelection(event) {
             const files = Array.from(event.target.files);
-            files.forEach(file => {
+            for (const file of files) {
                 this.selectedFiles.push(file);
                 const previewUrl = URL.createObjectURL(file);
                 this.filePreviews.push({ url: previewUrl, file });
-            });
-            this.$refs.fileInput.value = null;
-        }
-        ,
+            }
+            this.$refs.fileInput.value = null; // 파일 선택 후 input 초기화
+        },
         removeFile(index) {
             this.selectedFiles.splice(index, 1);
             this.filePreviews.splice(index, 1);
@@ -142,14 +141,10 @@ export default {
         async uploadFiles() {
             const uploadedImageUrls = [];
             for (let file of this.selectedFiles) {
-                if (file instanceof File) {
-                    const imageUrl = await this.uploadImage(file);
-                    uploadedImageUrls.push(imageUrl);
-                } else {
-                    uploadedImageUrls.push(file.url);
-                }
+                const imageUrl = await this.uploadImage(file);
+                uploadedImageUrls.push(imageUrl);
             }
-            this.review.imageUrls = [...uploadedImageUrls];
+            this.review.imageUrls = [...this.review.imageUrls, ...uploadedImageUrls];
         },
         async uploadImage(blob) {
             const accessToken = localStorage.getItem('accessToken');
@@ -399,5 +394,5 @@ textarea.custom-input {
     /* 별의 너비 설정 */
     height: 40px !important;
     /* 별의 높이 설정 */
-  }
+}
 </style>

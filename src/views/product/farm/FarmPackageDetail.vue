@@ -368,10 +368,8 @@ export default {
     handleSubscriptionClick() {
       if (this.role === 'MEMBER') {
         this.subscribe();
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>", this.role);
       } else {
         this.sellerRestrictionModal = true;
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>", this.role);
       }
     },
     closeSellerRestrictionModal() {

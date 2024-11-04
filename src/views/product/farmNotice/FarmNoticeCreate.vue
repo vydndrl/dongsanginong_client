@@ -11,30 +11,17 @@
         <v-card-text style="font-size: 15px;">
           <form @submit.prevent="createNotice">
             <div>
-              <input 
-                type="text" 
-                v-model="notice.title" 
-                id="title" 
-                placeholder="제목을 입력하세요" 
-                required 
+              <input type="text" v-model="notice.title" id="title" placeholder="제목을 입력하세요" required
                 class="custom-input" />
             </div>
             <div>
-              <textarea 
-                v-model="notice.content" 
-                id="content" 
-                placeholder="내용을 입력하세요" 
-                required 
+              <textarea v-model="notice.content" id="content" placeholder="내용을 입력하세요" required
                 class="custom-input"></textarea>
             </div>
-            <div> 
+            <div>
               <!-- 파일 업로드 -->
-              <input 
-                type="file" 
-                @change="handleFileSelection" 
-                class="custom-input" 
-                ref="fileInput" 
-                multiple /> <!-- 다중 파일 업로드 -->
+              <input type="file" @change="handleFileSelection" class="custom-input" ref="fileInput" multiple />
+              <!-- 다중 파일 업로드 -->
             </div>
             <!-- 선택된 파일들 표시 -->
             <div v-if="filePreviews.length">
@@ -52,22 +39,13 @@
             </div>
           </form>
         </v-card-text>
-        
+
         <v-card-actions class="action-buttons">
           <v-spacer />
-          <v-btn 
-            color="light_green" 
-            class="custom-button"
-            @click="createNotice"
-          >
+          <v-btn color="light_green" class="custom-button" @click="createNotice">
             등록
           </v-btn>
-          <v-btn 
-            @click="showConfirmCloseModal"
-            color="light_green" 
-            class="custom-close-button"
-            text 
-          >
+          <v-btn @click="showConfirmCloseModal" color="light_green" class="custom-close-button" text>
             닫기
           </v-btn>
         </v-card-actions>
@@ -76,20 +54,20 @@
 
     <!-- 닫기 확인 모달 -->
     <v-dialog v-model="confirmCloseModal" max-width="300px">
-    <v-card class="modal" style="text-align: center;">
-      <v-card-text style="margin-top: 3px;">정말 닫으시겠습니까?</v-card-text>
-      <span style="color: gray; font-size: 13px; margin-top: -10px">현재 작성중인 내용은 저장되지 않습니다.</span><br>
-      <v-card-actions class="action-buttons" style="justify-content: center; margin-left: 2%; margin-top: -6%;">
-        <v-btn @click="closeDialog" class="custom-button">닫기</v-btn>
-        <v-btn @click="confirmCloseModal = false" class="custom-close-button">취소</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+      <v-card class="modal" style="text-align: center;">
+        <v-card-text style="margin-top: 3px;">정말 닫으시겠습니까?</v-card-text>
+        <span style="color: gray; font-size: 13px; margin-top: -10px">현재 작성중인 내용은 저장되지 않습니다.</span><br>
+        <v-card-actions class="action-buttons" style="justify-content: center; margin-left: 2%; margin-top: -6%;">
+          <v-btn @click="closeDialog" class="custom-button">닫기</v-btn>
+          <v-btn @click="confirmCloseModal = false" class="custom-close-button">취소</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <!-- 완료 메시지 모달 -->
     <v-dialog v-model="alertModal" max-width="260px">
       <v-card class="modal" style="padding: 10px; padding-right: 20px; text-align: center;">
-        <v-card-text>{{ alertMessage }}</v-card-text>
+        <v-card-text style="white-space: pre-line;">{{ alertMessage }}</v-card-text>
         <v-btn @click="closeAlertModal" class="submit-btn">닫기</v-btn>
       </v-card>
     </v-dialog>
@@ -125,7 +103,7 @@ export default {
       });
       this.$refs.fileInput.value = null; // 파일 입력 필드 초기화
     },
-    
+
     // 선택한 파일을 배열에서 삭제하는 메서드
     removeFile(index) {
       this.selectedFiles.splice(index, 1); // 해당 인덱스의 파일을 배열에서 삭제
@@ -185,7 +163,7 @@ export default {
     async createNotice() {
       // 값 검증: title과 content가 비어 있는지 확인
       if (!this.notice.title || !this.notice.content) {
-        this.alertMessage = '제목과 내용을 입력하세요.';
+        this.alertMessage = '제목과 내용을\n 입력하세요.';
         this.alertModal = true;
         return;
       }
@@ -246,7 +224,9 @@ export default {
     // 완료 메시지 모달을 닫고 페이지를 새로고침하는 메서드
     closeAlertModal() {
       this.alertModal = false;
-      window.location.reload(); // 페이지 새로고침
+      if (this.alertMessage === '공지사항이 성공적으로 생성되었습니다.') {
+        window.location.reload(); // 공지사항 생성 성공 시에만 새로고침
+      }
     },
 
     // 공지 생성 모달을 열 때, 입력값을 초기화
@@ -273,28 +253,37 @@ button {
 .custom-input {
   width: 100%;
   padding: 0.5em;
-  border: 1px solid #ccc; /* 테두리 추가 */
-  border-radius: 4px; /* 모서리 둥글게 */
+  border: 1px solid #ccc;
+  /* 테두리 추가 */
+  border-radius: 4px;
+  /* 모서리 둥글게 */
   box-sizing: border-box;
   font-size: 1em;
 }
 
 textarea.custom-input {
-  resize: vertical; /* 텍스트 영역 크기 조정 가능 */
-  min-height: 300px; /* 텍스트 영역 최소 높이 설정 */
+  resize: vertical;
+  /* 텍스트 영역 크기 조정 가능 */
+  min-height: 300px;
+  /* 텍스트 영역 최소 높이 설정 */
 }
 
 /* 선택된 파일 목록 */
 .preview-list {
-  display: flex; /* 가로로 나열 */
-  gap: 10px; /* 각 이미지 사이 간격 */
-  list-style-type: none; /* 리스트 기본 스타일 제거 */
+  display: flex;
+  /* 가로로 나열 */
+  gap: 10px;
+  /* 각 이미지 사이 간격 */
+  list-style-type: none;
+  /* 리스트 기본 스타일 제거 */
   padding: 0;
-  margin-bottom: 10px; /* 파일 목록과 버튼 간 간격 좁힘 */
+  margin-bottom: 10px;
+  /* 파일 목록과 버튼 간 간격 좁힘 */
 }
 
 .preview-container {
-  position: relative; /* 이미지에 상대적인 위치로 버튼 배치 */
+  position: relative;
+  /* 이미지에 상대적인 위치로 버튼 배치 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -316,7 +305,8 @@ textarea.custom-input {
   position: absolute;
   top: -5px;
   right: -5px;
-  background-color: black; /* 버튼 배경색 수정 */
+  background-color: black;
+  /* 버튼 배경색 수정 */
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -328,27 +318,35 @@ textarea.custom-input {
 
 /* 모달 커스텀 스타일 */
 .custom-dialog {
-  padding: 20px; /* 모달 내부 패딩 */
+  padding: 20px;
+  /* 모달 내부 패딩 */
 }
 
 .custom-card {
-  border-radius: 30px; /* 모달 테두리 둥글기 더 둥글게 수정 */
-  padding: 10px; /* 모달 내부 패딩 */
+  border-radius: 30px;
+  /* 모달 테두리 둥글기 더 둥글게 수정 */
+  padding: 10px;
+  /* 모달 내부 패딩 */
 }
 
 .custom-title {
   background-color: #BCC07B;
-  border-radius: 10px; /* 상단과 하단 모두 둥글게 */
+  border-radius: 10px;
+  /* 상단과 하단 모두 둥글게 */
   text-align: center;
-  width: calc(97% - 30px); /* 좌우 여백 맞추기 */
-  margin: 0 auto; /* 가운데 정렬 */
+  width: calc(97% - 30px);
+  /* 좌우 여백 맞추기 */
+  margin: 0 auto;
+  /* 가운데 정렬 */
   padding: 7px;
   font-size: 17px;
 }
 
 .action-buttons {
-  margin-bottom: 10px; /* 버튼들 아래쪽 여백을 줄임 */
-  gap: 5px; /* 버튼 간격을 좁게 조정 */
+  margin-bottom: 10px;
+  /* 버튼들 아래쪽 여백을 줄임 */
+  gap: 5px;
+  /* 버튼 간격을 좁게 조정 */
   margin-right: 3%;
   margin-top: -5px;
 }
@@ -363,7 +361,8 @@ textarea.custom-input {
 }
 
 .custom-button {
-  background-color: #BCC07B; /* 마우스 호버 시 배경색 변경 */
+  background-color: #BCC07B;
+  /* 마우스 호버 시 배경색 변경 */
 }
 
 .custom-close-button {
@@ -376,7 +375,8 @@ textarea.custom-input {
 }
 
 .custom-close-button {
-  background-color: #e0e0e0; /* 마우스 호버 시 배경색 변경 */
+  background-color: #e0e0e0;
+  /* 마우스 호버 시 배경색 변경 */
 }
 
 /* 완료 메시지 모달 */
