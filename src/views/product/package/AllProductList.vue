@@ -58,6 +58,11 @@
                         style="width:260px; height:500px; margin: 10px; margin-bottom: 15px;" :rounded="false">
                         <v-img class="package-image" :src="pkg.imageUrl" alt="Package 썸네일" cover
                             @click="this.$router.push(`/product/${pkg.id}`)" />
+                            <v-chip
+                            v-if="isNewProduct(pkg.createdAt)"
+                            style="position: absolute; top: 10px; right: 10px; background-color: rgba(0, 128, 0, 0.8); color: white;">
+                            NEW !
+                        </v-chip>
                         <v-chip
                             style="position: absolute; top: 10px; left: 10px; padding: 5px 10px; border-radius: 8px; background-color: rgba(128, 128, 128, 0.9); color: white;">
                             {{ pkg.deliveryCycle }}일 주기 배송🚚
@@ -75,7 +80,7 @@
                         <v-card-text style="padding-left: 0px;">
                             <span style="font-size:medium; font-weight: 400;" v-if="pkg.packageName.length > 20"> {{
                                 pkg.packageName.substring(0, 10)
-                                }}... </span>
+                            }}... </span>
                             <span style="font-size:medium; font-weight: 400;" v-else> {{ pkg.packageName }}</span>
                             <div class="item-info" v-if="pkg.discountId != null && pkg.discountActive == true">
                                 <p style="text-decoration: line-through; color: #999; font-size: 14px;">{{
@@ -168,6 +173,7 @@ export default {
         try {
             const topPackagesResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth/top10`);
             this.topPackageList = topPackagesResponse.data;
+            console.log(this.topPackageList)
             // 전체 패키지 리스트 가져오기
             let params = {
                 page: this.currentPage,
@@ -177,6 +183,7 @@ export default {
             }
             const packageListResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth`, { params });
             this.packageList = packageListResponse.data.content;
+            console.log(this.packageList)
             // sortOptionMap 설정
             this.sortOptionMap.set("최신순", "id,desc");
             this.sortOptionMap.set("판매량 순", "orderCount,desc");
@@ -244,6 +251,13 @@ export default {
             this.onboarding =
                 this.onboarding - 1 <= 0 ? this.windowCount : this.onboarding - 1;
         },
+        isNewProduct(createdAt) {
+            const createdDate = new Date(createdAt);
+            const currentDate = new Date();
+            const diffTime = Math.abs(currentDate - createdDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays <= 7; // 최근 7일 이내 생성된 경우 true 반환
+        },
         paginatedPackages(page) {
             // 페이지에 따라 패키지를 반환
             const packagesPerPage = 4;
@@ -251,7 +265,7 @@ export default {
             const end = start + packagesPerPage;
             return this.topPackageList.slice(start, end);
         },
-        onSearch: debounce(async function() {
+        onSearch: debounce(async function () {
             this.currentPage = 0;
             const params = {
                 page: this.currentPage,
