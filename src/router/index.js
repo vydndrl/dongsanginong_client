@@ -44,6 +44,15 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    // savedPosition이 있으면 해당 위치로 이동 (뒤로가기 등에서 사용)
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      // 새로운 페이지에서는 항상 최상단으로 이동
+      return { top: 0 };
+    }
+  }
 });
 
 export default router;
