@@ -484,6 +484,7 @@ export default {
             initialEditType: 'wysiwyg',
             initialValue: this.originalDetailedDescription,
             language: 'ko',
+            hideModeSwitch: true,
             hooks: {
               addImageBlobHook: this.onImageUpload, // 이미지 업로드 훅 설정
             },
