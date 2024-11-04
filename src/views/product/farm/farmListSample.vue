@@ -355,16 +355,30 @@ export default {
 
             let farmListResponse;
 
-            if (this.category === '') {
-                // No category selected, fetch all farms
-                farmListResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/farm/no-auth/search`, { params });
-            } else {
-                // Category selected, fetch farms by category
+            if (this.category && !this.searchQuery) {
+                // 카테고리만 선택 => farms-by-category api 호출
                 params.catName = this.category;
                 farmListResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/farm/no-auth/farms-by-category`, { params });
+
+            } else if (!this.category && this.searchQuery) {
+                // 검색만 진행 => search api 호출
+                farmListResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/farm/no-auth/search`, { params });
+
+            } else if (this.category && this.searchQuery) {
+                // 둘다 진행 => farms-by-category api 호출 후 필터링
+                params.catName = this.category;
+                farmListResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/farm/no-auth/farms-by-category`, { params });
+
+                farmListResponse.data.content = farmListResponse.data.content.filter(farm =>
+                    farm.farmName.includes(this.searchQuery)
+                );
+            } else {
+                // 둘다 안함 => 전체 불러오기 
+                farmListResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/farm/no-auth/search`, { params });
             }
 
             this.farmList = farmListResponse.data.content;
+            this.isLastPage = farmListResponse.data.last;
 
             // Set likes and like counts
             for (let i = 0; i < this.farmList.length; ++i) {
@@ -382,6 +396,7 @@ export default {
                 const packages = res.data.content.slice(0, 10);
                 this.farmList[i] = { ...this.farmList[i], "packages": packages };
             }
+            this.isLoading = false;
         }, 300),
         async loadFarm() {
             try {
@@ -400,16 +415,19 @@ export default {
                 let response;
 
                 if (this.category === '') {
-                    // No category selected, fetch all farms
                     response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/farm/no-auth/search`, { params });
                 } else {
-                    // Category selected, fetch farms by category
                     params.catName = this.category;
                     response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/farm/no-auth/farms-by-category`, { params });
                 }
                 // 서버에서 주지 않은 데이터를 추가한 것이다.
-                const additionalData = response.data.content;
+                let additionalData = response.data.content;
 
+                if (this.searchQuery) {
+                    additionalData = additionalData.filter(farm =>
+                        farm.farmName.includes(this.searchQuery)
+                    );
+                }
 
                 // 좋아요 수 세팅
                 for (let i = 0; i < additionalData.length; ++i) {
