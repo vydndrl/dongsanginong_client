@@ -296,9 +296,9 @@ export default {
     async created() {
         // 테스트용 임시 데이터
         this.images = [
-            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/main_banner2.png", "alt": "배너사진1", "link": "/event2" },
+            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/main_banner1.png", "alt": "배너사진1", "link": "/event2" },
             { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/farm/c556f77b-55c7-484e-b923-ce7fb7b00a01banner6", "alt": "배너사진5", "link": "/event2" },
-            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/main_banner1.png", "alt": "배너사진2", "link": "/event2" },
+            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/main_banner2.png", "alt": "배너사진2", "link": "/event2" },
             { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/main_banner3.png", "alt": "배너사진3", "link": "/event2" },
         ];
 

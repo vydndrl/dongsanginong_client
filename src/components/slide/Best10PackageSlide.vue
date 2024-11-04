@@ -5,6 +5,10 @@
                 <div class="carousel-item" v-for="(item, index) in items" :key="index">
                     <img :src="item.imageUrl" alt="item image" class="item-img"
                         @click="this.$router.push(`/product/${item.id}`)" />
+                    <v-chip v-if="isNewProduct(item.createdAt)"
+                        style="position: absolute; top: 10px; right: 10px; background-color: rgba(0, 128, 0, 0.8); color: white;">
+                        NEW !
+                    </v-chip>
                     <v-chip
                         style="position: absolute; top: 10px; left: 10px; padding: 5px 10px; border-radius: 8px; background-color: rgba(128, 128, 128, 0.9); color: white;">
                         {{ item.deliveryCycle }}일 주기 배송🚚
@@ -22,18 +26,21 @@
 
                     <div style="margin-top: 10px; margin-bottom: -10px;">
                         <span style="font-size: medium; color: black;" v-if="item.packageName.length > 20"> {{
-                        item.packageName.substring(0, 10)
-                    }}... </span>
-                    <span style="font-size: medium; color: black;" v-else> {{ item.packageName }}</span>
+                            item.packageName.substring(0, 10)
+                            }}... </span>
+                        <span style="font-size: medium; color: black;" v-else> {{ item.packageName }}</span>
                     </div>
                     <div class="item-info" v-if="item.discountId != null && item.discountActive == true">
-                        <p style="text-decoration: line-through; color: #999; font-size: 14px;">{{ getAmountWithFormat(item.price) }}원</p>
+                        <p style="text-decoration: line-through; color: #999; font-size: 14px;">{{
+                            getAmountWithFormat(item.price) }}원</p>
                         <div style="margin-bottom: 2px;">
-                            <span style="color: green;">{{ getAmountWithFormat(item.price - item.discount) }}원&nbsp;&nbsp;</span>
+                            <span style="color: green;">{{ getAmountWithFormat(item.price - item.discount)
+                                }}원&nbsp;&nbsp;</span>
                             <span class="sale-style">SALE</span>
                         </div>
                         <p style="color:#999; font-size: small;"> 1회 제공 금액 {{
-                            getAmountWithFormat(getPerCyclePrice(item.price - item.discount, item.deliveryCycle)) }} </p>
+                            getAmountWithFormat(getPerCyclePrice(item.price - item.discount, item.deliveryCycle)) }}
+                        </p>
                         <p style="color:#999; font-size: small;">
                             🧾 누적 주문 {{ item.orderCount }}
                         </p>
@@ -97,6 +104,13 @@ export default {
             setInterval(() => {
                 this.currentSlide = (this.currentSlide + 1) % this.totalPages;  // Move to next page
             }, 5000); // Change slide every 3 seconds
+        },
+        isNewProduct(createdAt) {
+            const createdDate = new Date(createdAt);
+            const currentDate = new Date();
+            const diffTime = Math.abs(currentDate - createdDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays <= 7; // 최근 7일 이내 생성된 경우 true 반환
         },
         getAmountWithFormat(amount) {
             let ret = "";
@@ -230,8 +244,8 @@ export default {
 }
 
 .sale-style {
-    background-color: rgb(245, 77, 77); 
-    color: white; 
+    background-color: rgb(245, 77, 77);
+    color: white;
     padding-right: 7px;
     padding-left: 7px;
     padding-bottom: 3px;
@@ -256,5 +270,4 @@ export default {
         transform: translate(-50%, -100px) scale(0);
     }
 }
-
 </style>
