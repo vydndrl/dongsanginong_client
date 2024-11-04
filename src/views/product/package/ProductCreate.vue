@@ -74,10 +74,11 @@
       <!-- 버튼 그룹 -->
       <div class="button-group">
         <!-- 패키지 등록 버튼 -->
-        <button type="button" @click="submitProduct" class="submit-button">패키지 등록</button>
-        <button type="button" @click="toggleEditor" class="submit-button">
+        <!-- <button type="button" @click="submitProduct" class="submit-button">패키지 등록</button> -->
+        <button type="button" @click="toggleEditor" class="submit-button" style="background-color: #e0e0e0;">
           {{ isEditorVisible ? '상세 정보 숨기기' : '상세 정보 추가' }}
         </button>
+        <button type="button" @click="submitProduct" class="submit-button">패키지 등록</button>
       </div>
 
       <!-- 상세 정보 에디터 -->
@@ -577,13 +578,13 @@ textarea {
 }
 
 .submit-button {
-  width: 200px;
+  width: 150px;
   padding: 10px;
   background-color: #bcc07b;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   color: black;
 }
 
