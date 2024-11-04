@@ -9,8 +9,8 @@
                 <br>
                 <v-row justify="center">
                     <!-- 쿠폰 리스트  -->
-                    <v-col cols="12" md="8">
-                        <v-row class="coupon-grid" justify="center">
+                    <v-col cols="12" md="12">
+                        <v-row class="coupon-grid" justify="start">
                             <div
                                 v-for="(coupon, index) in paginatedCoupons"
                                 :key="coupon.couponId"
