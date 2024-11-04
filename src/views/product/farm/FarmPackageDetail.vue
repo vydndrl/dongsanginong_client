@@ -48,7 +48,7 @@
             <hr class="custom-hr" />
             <strong class="green-text">정기구독</strong>
             <span class="black-text">
-              은 꾸준히 오랜기간 먹는 음식을 믿을 수 있는 생산자의 먹거리로 제안합니다.
+              은 꾸준히 오랜기간 먹는 음식을 믿을 수 있는 생산자의 먹거리로 제안합니다.<br>
               매번 재구매하실 필요 없이 정해진 주기로 배송해드립니다.
             </span>
             <hr class="custom-hr" /><br>
@@ -70,7 +70,7 @@
         <v-card flat>
           <v-card-subtitle class="payment-title">결제방식</v-card-subtitle>
           <v-card-text class="payment-info">
-            정기구독은 카드결제만 가능합니다. 등록하신 카드로 선택한 주기에 따라 자동결제되며,
+            정기구독은 카드결제만 가능합니다. 등록하신 카드로 선택한 주기에 따라 자동결제되며,<br>
             상품은 결제일 기준 1~2일 내 출고됩니다.
           </v-card-text>
         </v-card>
@@ -359,7 +359,7 @@ export default {
       );
       this.reviews = reviewResponse.data.reverse();
       this.totalReviews = this.reviews.length;
-    } catch (e) {
+    } catch (e) { 
       console.error(e);
     }
   },
