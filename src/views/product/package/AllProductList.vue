@@ -116,6 +116,7 @@ import { mdiHeartPlusOutline } from '@mdi/js';
 import { mdiHeartOutline, mdiHeart } from '@mdi/js';
 import { mdiMenuDown } from '@mdi/js';
 import Best10PackageSlide from '@/components/slide/Best10PackageSlide.vue';
+import debounce from 'lodash/debounce';
 
 export default {
     name: "my-component",
@@ -250,26 +251,27 @@ export default {
             const end = start + packagesPerPage;
             return this.topPackageList.slice(start, end);
         },
-        async onSearch() {
+        onSearch: debounce(async function() {
             this.currentPage = 0;
-            this.pageSize = 10;
             const params = {
                 page: this.currentPage,
                 size: this.pageSize,
                 sort: this.sortOptionMap.get(this.sortOption),
                 packageName: this.searchQuery
-            }
-            console.log(params)
+            };
+            console.log(params);
             this.isLoading = true;
+
             try {
                 const packageListResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/no-auth/search`, { params });
                 this.packageList = packageListResponse.data.content;
                 this.isLastPage = packageListResponse.data.last;
             } catch (error) {
                 console.error(error);
+            } finally {
+                this.isLoading = false;
             }
-            this.isLoading = false;
-        },
+        }, 300),
         async loadPackage() {
             try {
                 if (this.isLoading || this.isLastPage) return;
