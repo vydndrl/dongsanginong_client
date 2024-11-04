@@ -76,10 +76,11 @@
       <!-- 버튼 그룹 -->
       <div class="button-group">
         <!-- 패키지 수정 버튼 -->
-        <button type="button" @click="updateProduct" class="submit-button">패키지 수정</button>
-        <button type="button" @click="toggleEditor" class="submit-button">
+        <!-- <button type="button" @click="updateProduct" class="submit-button">패키지 수정</button> -->
+        <button type="button" @click="toggleEditor" class="submit-button" style="background-color: #e0e0e0;">
           {{ isEditorVisible ? '상세 정보 숨기기' : '상세 정보 수정' }}
         </button>
+        <button type="button" @click="updateProduct" class="submit-button">수정 완료</button>
       </div>
 
       <!-- 상세 정보 에디터 -->
@@ -112,15 +113,15 @@
     </v-dialog>
 
     <!-- 상세 정보 숨기기 확인 모달 -->
-    <v-dialog v-model="confirmHideEditorModal" max-width="400px">
-      <v-card class="validationModal" style="padding: 20px; text-align: center;">
+    <v-dialog v-model="confirmHideEditorModal" max-width="370px">
+      <v-card class="validationModal" style="padding: 10px; text-align: center;">
         <v-card-text>
           <p>입력한 모든 데이터가 사라집니다.</p>
           <p>숨기시겠습니까?</p>
         </v-card-text>
-        <v-card-actions class="justify-center">
+        <v-card-actions class="justify-center" style="margin-top: -15px;">
           <v-btn @click="handleConfirmHideEditor" class="submit-btn">확인</v-btn>
-          <v-btn @click="closeConfirmHideEditor" class="submit-btn">취소</v-btn>
+          <v-btn @click="closeConfirmHideEditor" class="submit-btn" style="background-color: #e0e0e0;">취소</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -397,7 +398,10 @@ export default {
       this.successModal = false;
       this.$nextTick(() => {
         // 모달이 닫힌 후 페이지 이동
-        this.$router.push({ name: 'ProductList' });
+        this.$router.push({ 
+          name: 'FarmPackageDetail',
+          params: { packageId: this.productId } 
+        });
       })
     },
 
@@ -621,13 +625,13 @@ textarea {
 }
 
 .submit-button {
-  width: 200px;
+  width: 150px;
   padding: 10px;
   background-color: #bcc07b;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   color: black;
 }
 
