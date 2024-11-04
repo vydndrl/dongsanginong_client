@@ -1,5 +1,5 @@
 <template>
-    <v-carousel cycle :show-arrows="false" delimiter-icon="mdi-square" delimiter-color="light_green" height="520"
+    <v-carousel cycle :show-arrows="false" delimiter-icon="mdi-square" delimiter-color="light_green" height="510"
         interval="5000" hide-delimiter-background> <!--4초마다 슬라이드-->
         <v-carousel-item v-for="(image, index) in images" :key="index" style="overflow: hidden;">
             <img :src="image.src" :alt="image.alt" class="banner-img" />
@@ -296,13 +296,9 @@ export default {
     async created() {
         // 테스트용 임시 데이터
         this.images = [
-            // { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/0dac11a7-7643-4fd0-a591-e6fb84ed7796inong1", "alt": "배너사진1", "link": "/event1" },
-            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/a591fdfe-4151-4b7f-932a-d5afff886ae5banner2", "alt": "배너사진3", "link": "/event2" },
-            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/farm/c556f77b-55c7-484e-b923-ce7fb7b00a01banner6", "alt": "배너사진4", "link": "/event2" },
-            // { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/7b389588-8eda-4eee-9502-703efca9d648inong2", "alt": "배너사진2", "link": "/event2" },
-            // { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/a591fdfe-4151-4b7f-932a-d5afff886ae5banner2", "alt": "배너사진3", "link": "/event2" },
-            // { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/farm/c556f77b-55c7-484e-b923-ce7fb7b00a01banner6", "alt": "배너사진4", "link": "/event2" },
-            // { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/local/desktop+wallpaper.jpeg", "alt": "배너사진5", "link": "/event2" }
+            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/main_banner2.png", "alt": "배너사진1", "link": "/event2" },
+            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/main_banner1.png", "alt": "배너사진2", "link": "/event2" },
+            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/mainpage/main_banner3.png", "alt": "배너사진3", "link": "/event2" },
         ];
 
 
@@ -331,7 +327,6 @@ export default {
 }
 
 .banner-img {
-    object-fit: cover;
     width: 100%;
     /* 부모의 너비에 맞추기 */
     height: 100%;

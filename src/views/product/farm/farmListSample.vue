@@ -1,5 +1,5 @@
 <template>
-    <v-carousel cycle :show-arrows="false" delimiter-icon="mdi-square" delimiter-color="light_green" height="350"
+    <v-carousel cycle :show-arrows="false" delimiter-icon="mdi-square" delimiter-color="light_green" height="267"
         interval="5000" hide-delimiter-background>
         <v-carousel-item v-for="(image, index) in images" :key="index" style="overflow: hidden;">
             <img :src="image.src" :alt="image.alt" class="banner-img" />
@@ -213,9 +213,9 @@ export default {
     },
     async created() {
         this.images = [
-            // { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/Farm/1ec43aec-e12b-41aa-8a7d-9c831914c6ae%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-10-22%20221354.png", "alt": "배너사진3", "link": "/event2" },
-            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/farm/3e88ac02-ef09-43f8-903b-e41dcee32eb1banner9", "alt": "배너사진3", "link": "/event2" },
-            // { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/Farm/ca7a17bc-0a34-477e-bca5-9f80c539293a%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-10-22%20233941.png", "alt": "배너사진4", "link": "/event2" },
+            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/banner/banner_farm1.png", "alt": "배너사진1", "link": "/event2" },
+            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/banner/banner_farm2.png", "alt": "배너사진2", "link": "/event2" },
+            { "src": "https://dongsanginong-bucket.s3.ap-northeast-2.amazonaws.com/banner/banner_farm3.png", "alt": "배너사진3", "link": "/event2" },
         ];
         const params = {
             "page": 0,
