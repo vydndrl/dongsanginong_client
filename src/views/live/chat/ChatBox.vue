@@ -548,7 +548,14 @@ export default {
       })
       .then(response => {
         console.log('Coupons API Response:', response.data);
-        this.coupons = response.data;
+        const today = new Date();
+        this.coupons = response.data.filter(coupon => {
+        const expirationDate = new Date(coupon.expiration);
+        return expirationDate > today;
+      });
+      if (this.coupons.length === 0) {
+        console.warn('유효한 쿠폰이 없습니다.');
+        }
       })
       .catch(error => {
         console.error('Error fetching coupons:', error);
