@@ -108,10 +108,10 @@
     </v-dialog>
 
     <!-- 알림 모달 -->
-    <v-dialog v-model="alertDialog" max-width="350px">
-      <v-card class="modal" style="padding: 10px; padding-bottom: 20px; text-align: center; white-space: pre-line;">
+    <v-dialog v-model="alertDialog" max-width="350px" >
+      <v-card class="modal" style="padding: 15px; padding-bottom: 20px; text-align: center; white-space: pre-line;">
         <v-card-text style="text-align: center;">{{ alertMessage }}</v-card-text>
-        <v-btn @click="closeAllModals" style="margin-top: -10px; border-radius: 50px; width: 90%; margin-left: 5%; background-color: #BCC07B">닫기</v-btn>
+        <v-btn @click="closeAllModals" style="margin-top: 10px; border-radius: 50px; width: 90%; margin-left: 5%; background-color: #BCC07B">닫기</v-btn>
       </v-card>
     </v-dialog>
 
@@ -192,7 +192,7 @@ export default {
         );
 
         if (selectedDateTime < currentDateTime) {
-          this.showAlert('해당 날짜를 선택하실 수 없습니다.\n \n다른 날짜를 선택해 주세요.');
+          this.showAlert('해당 날짜를 선택하실 수 없습니다.\n 다른 날짜를 선택해 주세요.');
           return;
         }
 
