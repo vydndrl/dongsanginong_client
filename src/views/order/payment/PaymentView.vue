@@ -185,7 +185,7 @@
 
     <v-dialog v-model="this.failModal" max-width="300px">
         <v-card class="modal"
-            style="align-items: center; text-align: center; width: 350px; height: 160px; padding-bottom: 20px; overflow-y: hidden;">
+            style="align-items: center; text-align: center; width: 380px; height: 160px; padding-bottom: 20px; overflow-y: hidden;">
             <v-card-text>
                 정기 결제 수단 등록에 실패했습니다. <br>
                 다시 시도해주세요.

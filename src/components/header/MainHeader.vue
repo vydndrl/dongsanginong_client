@@ -134,7 +134,7 @@
                             <span v-html="highlightKeyword(product.packageName)"></span>
                         </v-card-title>
                         <v-card-text style="font-size: 14px;">
-                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <!-- <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
                             <span v-html="highlightKeyword(product.productDescription)"></span>
                         </v-card-text>
                     </v-card>
