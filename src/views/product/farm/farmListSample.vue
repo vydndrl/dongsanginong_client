@@ -161,7 +161,7 @@
                 </v-card-text>
                 <v-row>
                     <v-btn @click="this.sellerModal = false" class="submit-btn"
-                        style="background-color: #e0e0e0;">닫기</v-btn>
+                        style="background-color: #BCC07B;">닫기</v-btn>
                 </v-row>
 
             </v-card>
