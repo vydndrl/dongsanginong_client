@@ -90,7 +90,7 @@
   <!-- 완료 메시지 모달 -->
   <v-dialog v-model="alertModal" max-width="260px">
     <v-card class="modal" style="padding: 10px; padding-right: 20px; text-align: center;">
-      <v-card-text>{{ alertMessage }}</v-card-text>
+      <v-card-text style="white-space: pre-line;">{{ alertMessage }}</v-card-text>
       <v-btn @click="closeAlertModal" class="submit-btn">닫기</v-btn>
     </v-card>
   </v-dialog>
@@ -246,6 +246,15 @@ export default {
         return;
       }
 
+      // 종료 날짜가 시작 날짜보다 빠를 경우 오류 처리
+      const startDate = new Date(this.discount.startAt);
+      const endDate = new Date(this.discount.endAt);
+      if (endDate < startDate) {
+        this.errorMessage = "다른 날짜를 선택해 주세요.";
+        this.errorModal = true;
+        return;
+      }
+
       this.createDiscount();
     },
     async createDiscount() {
@@ -259,7 +268,7 @@ export default {
             },
           }
         );
-        this.alertMessage = "할인이 성공적으로\n생성되었습니다!";
+        this.alertMessage = "할인이 성공적으로 \n 생성되었습니다!";
         this.alertModal = true;
       } catch (error) {
         this.errorMessage = "선택하신 상품이 다른 할인을\n 이미 가지고 있습니다.";
