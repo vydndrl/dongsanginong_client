@@ -99,23 +99,43 @@
                   {{ live.participantCount - 1}}명 시청 중
                 </div>
                 <!-- 프리뷰 라이브 -->
-                <video
+                <!-- <video
                   v-if="live.isPreviewing"
                   :ref="'videoPlayer-' + live.liveId"
                   muted
                   autoplay
                   loop
                   class="live-video-preview"
-                  style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px;"
-                ></video>
+                  style="width: 100%; height: 280px; object-fit: cover; border-radius: 15px;"
+                ></video> -->
                 <!-- 썸네일 -->
-                <v-img
+                <!-- <v-img
                   width="100%"
                   height="280px"
                   :src="live.liveImage"
                   alt="live 썸네일" 
                   cover
-                />
+                /> -->
+                <div style="position: relative;  width: 100%; height: 280px;">
+                  <!-- 썸네일 이미지 -->
+                  <v-img
+                    width="100%"
+                    height="280px"
+                    :src="live.liveImage"
+                    alt="live 썸네일"
+                    cover
+                  />
+                  <!-- 프리뷰 라이브 영상 -->
+                  <video
+                    v-show="live.isPreviewing"
+                    :ref="'videoPlayer-' + live.liveId"
+                    muted
+                    autoplay
+                    loop
+                    class="live-video-preview"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;"
+                  ></video>
+                </div>
                 <v-card-text>
                   <span v-if="live.title.length > 10">
                     [ {{ live.farmName }} ] {{ live.title.substring(0, 10) }}... 
