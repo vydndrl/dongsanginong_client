@@ -48,8 +48,9 @@
                             </span>
                             <!-- 그 외의 고객들이 댓글 다는 경우 -->
                             <span v-else>&nbsp;@{{ comment.name }}</span>
-                            <span style="font-size: 13px; color: grey;">&nbsp;&nbsp;{{ comment.formattedDate }}</span></v-card-text>
-                        <v-btn v-if="comment.memberId == userId" color="white" style="box-shadow: none; border: none; margin-bottom: 10px; font-size: 12px;" @click="openOptions(comment)">
+                            <span style="font-size: 13px; color: grey;">&nbsp;&nbsp;{{ comment.formattedDate }}</span>
+                        </v-card-text>
+                        <v-btn v-if="(comment.memberId == userId && userId2 == null) || (comment.sellerId == userId2 && userId == null)" color="white" style="box-shadow: none; border: none; margin-bottom: 10px; font-size: 12px;" @click="openOptions(comment)">
                             <img src="/plus.png" width=13 alt="Logo" /> 
                         </v-btn>
                     </v-row>
@@ -129,6 +130,7 @@ export default {
             totalItems: 0,   
 
             userId: localStorage.getItem('memberId'), 
+            userId2: localStorage.getItem('sellerId'),
             dialog: false,  
             selectedComment: null,
 

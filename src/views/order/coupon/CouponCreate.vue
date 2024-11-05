@@ -108,21 +108,20 @@
     </v-dialog>
 
     <!-- 알림 모달 -->
-    <v-dialog v-model="alertDialog" max-width="350px">
-      <v-card class="modal" style="padding: 10px; padding-bottom: 15px; text-align: center;">
+    <v-dialog v-model="alertDialog" max-width="350px" >
+      <v-card class="modal" style="padding: 15px; padding-bottom: 20px; text-align: center; white-space: pre-line;">
         <v-card-text style="text-align: center;">{{ alertMessage }}</v-card-text>
-        <v-btn @click="closeAllModals" style=" margin-top: -10px; border-radius: 50px; width: 90%; margin-left: 5%;
-        background-color: #BCC07B">닫기</v-btn>
+        <v-btn @click="closeAllModals" style="margin-top: 10px; border-radius: 50px; width: 90%; margin-left: 5%; background-color: #BCC07B">닫기</v-btn>
       </v-card>
     </v-dialog>
-  </v-dialog>
 
-  <!--  완료 모달  -->
-  <v-dialog v-model="successModal" max-width="260px">
-    <v-card class="modal" style="padding: 10px; text-align: center;">
-          <v-card-text style="text-align: center;">등록이 완료되었습니다.</v-card-text>
-          <v-btn @click="closeSuccessModal" class="submit-btn">확인</v-btn>
+    <!-- 완료 모달 -->
+    <v-dialog v-model="successModal" max-width="260px">
+      <v-card class="modal" style="padding: 10px; text-align: center;">
+        <v-card-text style="text-align: center;">등록이 완료되었습니다.</v-card-text>
+        <v-btn @click="closeSuccessModal" class="submit-btn">확인</v-btn>
       </v-card>
+    </v-dialog>
   </v-dialog>
 </template>
 
@@ -143,9 +142,9 @@ export default {
         discountPercentage: 0,
         expirationDate: '',
         expirationTime: '',
-        quantity: 0, // 수량 필드 추가
+        quantity: 0,
       },
-      isUnlimitedQuantity: 'limited', // 수량 제한 여부를 위한 값
+      isUnlimitedQuantity: 'limited',
       selectedDate: null,
       selectedTime: '12:00',
       formattedExpiration: '',
@@ -163,9 +162,9 @@ export default {
         discountPercentage: 0,
         expirationDate: '',
         expirationTime: '',
-        quantity: 0, // 초기화
+        quantity: 0,
       };
-      this.isUnlimitedQuantity = 'limited'; // 무제한 수량 선택 초기화
+      this.isUnlimitedQuantity = 'limited';
       this.selectedDate = null;
       this.selectedTime = '12:00';
       this.formattedExpiration = '';
@@ -183,16 +182,30 @@ export default {
     },
     setDateTime() {
       if (this.selectedDate && this.selectedTime) {
+        const currentDateTime = new Date();
+        const selectedDateTime = new Date(
+          this.selectedDate.getFullYear(),
+          this.selectedDate.getMonth(),
+          this.selectedDate.getDate(),
+          parseInt(this.selectedTime.split(':')[0], 10),
+          parseInt(this.selectedTime.split(':')[1], 10)
+        );
+
+        if (selectedDateTime < currentDateTime) {
+          this.showAlert('해당 날짜를 선택하실 수 없습니다.\n 다른 날짜를 선택해 주세요.');
+          return;
+        }
+
         const year = this.selectedDate.getFullYear();
         const month = String(this.selectedDate.getMonth() + 1).padStart(2, '0');
         const day = String(this.selectedDate.getDate()).padStart(2, '0');
-        
+
         const formattedDate = `${year}-${month}-${day}`;
-        
+
         this.coupon.expirationDate = formattedDate;
         this.coupon.expirationTime = this.selectedTime;
         this.formattedExpiration = `${formattedDate} ${this.selectedTime}`;
-        
+
         this.datePickerDialog = false;
         this.timePickerDialog = false;
       }
@@ -203,9 +216,9 @@ export default {
     },
     updateQuantity() {
       if (this.isUnlimitedQuantity === 'unlimited') {
-        this.coupon.quantity = -1; // 무제한일 경우 -1로 설정
+        this.coupon.quantity = -1;
       } else {
-        this.coupon.quantity = 1; // 기본값 설정
+        this.coupon.quantity = 1;
       }
     },
     validateAndCreateCoupon() {
@@ -237,7 +250,7 @@ export default {
         discountPercentage: this.coupon.discountPercentage,
         expirationDate: this.coupon.expirationDate,
         expirationTime: this.coupon.expirationTime,
-        quantity: this.coupon.quantity, // 수량 추가
+        quantity: this.coupon.quantity,
       };
 
       const token = localStorage.getItem('Bearer Token');
@@ -255,7 +268,6 @@ export default {
           }
         );
         this.successModal = true;
-        // this.showAlert('쿠폰이 성공적으로 생성되었습니다.');
       } catch (error) {
         console.error('쿠폰 생성 실패:', error.response?.data || error.message);
         this.showAlert('쿠폰 생성에 실패했습니다.');

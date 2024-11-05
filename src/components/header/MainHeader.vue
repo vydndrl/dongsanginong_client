@@ -109,7 +109,7 @@
                             <span v-html="highlightKeyword(item.farmName || item.packageName)"></span>
                         </v-card-title>
                         <v-card-text style="font-size: 14px;">
-                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <!-- <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
                             <span v-html="highlightKeyword(item.farmIntro || item.productDescription)"></span>
                         </v-card-text>
                     </v-card>
@@ -121,7 +121,7 @@
                             <span v-html="highlightKeyword(farm.farmName)"></span>
                         </v-card-title>
                         <v-card-text style="font-size: 14px;">
-                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <!-- <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
                             <span v-html="highlightKeyword(farm.farmIntro)"></span>
                         </v-card-text>
                     </v-card>
@@ -134,7 +134,7 @@
                             <span v-html="highlightKeyword(product.packageName)"></span>
                         </v-card-title>
                         <v-card-text style="font-size: 14px;">
-                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <!-- <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
                             <span v-html="highlightKeyword(product.productDescription)"></span>
                         </v-card-text>
                     </v-card>
