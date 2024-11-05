@@ -440,9 +440,6 @@ export default {
             this.logoImage = paymentMethodRes.data.logoImageUrl;
             console.log(this.logoImage);
 
-            // packageId로 farmId가져오기 
-            this.farmId = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/product-service/product/info/${packageId}`);
-
             // 멤버 정보 불러오기 (배송지를 위함)
             const memberRes = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/member/member-info`);
             this.member = memberRes.data;
@@ -473,8 +470,8 @@ export default {
             const allCoupons = couponRes.data;
             console.log("line 470");
             console.log(Date.now());
-            this.availableCoupons = allCoupons.filter(coupon => coupon.useYn === "N" && new Date(coupon.expiration) >= new Date() && coupon.farmId == this.farmId);
-            console.log(">>>>>coupon.farmId: " + coupon.farmId + " >>>>>this.farmId: " + this.farmId);
+            this.availableCoupons = allCoupons.filter(coupon => coupon.useYn === "N" && new Date(coupon.expiration) >= new Date() && coupon.farmId == packageProduct.farmId);
+            console.log(">>>>>coupon.farmId: " + coupon.farmId + " >>>>>packageProduct.farmId: " + packageProduct.farmId);
             this.couponDiscountRate = Number(couponRes.discountRate) / 100;
             this.couponDiscountedAmount = this.couponDiscountRate * this.packageProduct.price;
 
