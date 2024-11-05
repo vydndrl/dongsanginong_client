@@ -185,7 +185,7 @@
 
     <v-dialog v-model="this.failModal" max-width="300px">
         <v-card class="modal"
-            style="align-items: center; text-align: center; width: 300px; height: 160px; padding-bottom: 20px; overflow-y: hidden;">
+            style="align-items: center; text-align: center; width: 380px; height: 160px; padding-bottom: 20px; overflow-y: hidden;">
             <v-card-text>
                 정기 결제 수단 등록에 실패했습니다. <br>
                 다시 시도해주세요.
@@ -467,7 +467,9 @@ export default {
                 }
             });
             const allCoupons = couponRes.data;
-            this.availableCoupons = allCoupons.filter(coupon => coupon.useYn === "N");
+            console.log("line 470");
+            console.log(Date.now());
+            this.availableCoupons = allCoupons.filter(coupon => coupon.useYn === "N" && new Date(coupon.expiration) >= new Date());
             this.couponDiscountRate = Number(couponRes.discountRate) / 100;
             this.couponDiscountedAmount = this.couponDiscountRate * this.packageProduct.price;
 
