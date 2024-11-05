@@ -161,7 +161,7 @@
                 <v-btn @click="this.$router.push('/member/sign-in')" class="submit-btn"
                     style="background-color: #BCC07B;">로그인하기</v-btn>
                 <v-btn @click="this.loginModal = false" class="submit-btn"
-                    style="background-color: #e0e0e0;">close</v-btn>
+                    style="background-color: #e0e0e0;">닫기</v-btn>
             </v-row>
 
         </v-card>
@@ -177,7 +177,7 @@
             </v-card-text>
             <v-row>
                 <v-btn @click="this.loginModal = false" class="submit-btn"
-                    style="background-color: #e0e0e0;">close</v-btn>
+                    style="background-color: #BCC07B;">닫기</v-btn>
             </v-row>
 
         </v-card>

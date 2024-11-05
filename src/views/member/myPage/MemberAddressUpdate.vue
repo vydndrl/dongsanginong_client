@@ -38,14 +38,14 @@
         <v-card class="modal" style="align-items: center; text-align: center; height: 130px; padding-bottom: 20px; 
         overflow-y: hidden;">
             <v-card-text style="margin-bottom:5px">{{ modalMessage_address }}</v-card-text>
-            <v-btn @click="handleAlertClose_address" class="submit-btn" style="border-radius: 50px; width: 100px">close</v-btn>
+            <v-btn @click="handleAlertClose_address" class="submit-btn" style="border-radius: 50px; width: 100px">닫기</v-btn>
         </v-card>
     </v-dialog>
 
     <v-dialog v-model="errorModal" max-width="300px">
         <v-card class="modal" style="align-items: center; text-align: center;">
             <v-card-text>주소지 변경 중 오류가 발생했습니다. <br /> 다시 시도해주세요.</v-card-text>
-            <v-btn @click="handleCloseErrorModal_address" class="submit-btn" width="100px">close</v-btn>
+            <v-btn @click="handleCloseErrorModal_address" class="submit-btn" width="100px">닫기</v-btn>
         </v-card>
     </v-dialog>
 </template>

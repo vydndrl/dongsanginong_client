@@ -42,14 +42,14 @@
     <v-dialog v-model="alertModal" max-width="300px">
         <v-card class="modal" style="align-items: center; text-align: center; height: 130px; padding-bottom: 20px; overflow-y: hidden;">
             <v-card-text style="margin-bottom:5px">{{ modalMessage }}</v-card-text>
-            <v-btn @click="handleAlertClose" class="submit-btn" style="border-radius: 50px; width: 100px">close</v-btn>
+            <v-btn @click="handleAlertClose" class="submit-btn" style="border-radius: 50px; width: 100px">닫기</v-btn>
         </v-card>
     </v-dialog>
 
     <v-dialog v-model="errorModal" max-width="300px">
         <v-card class="modal" style="align-items: center; text-align: center;">
             <v-card-text>쿠폰 리스트 갱신 중 오류가 발생했습니다. 다시 시도해주세요.</v-card-text>
-            <v-btn @click="handleCloseErrorModal" class="submit-btn" width="100px">close</v-btn>
+            <v-btn @click="handleCloseErrorModal" class="submit-btn" width="100px">닫기</v-btn>
         </v-card>
     </v-dialog>
 </template>

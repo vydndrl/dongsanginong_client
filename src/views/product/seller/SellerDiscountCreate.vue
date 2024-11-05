@@ -271,7 +271,7 @@ export default {
         this.alertMessage = "할인이 성공적으로 \n 생성되었습니다!";
         this.alertModal = true;
       } catch (error) {
-        this.errorMessage = "선택하신 상품이 다른 할인을\n 이미 가지고 있습니다.";
+        this.errorMessage = "이미 할인이 적용된\n 상품이 있습니다.";
         this.errorModal = true;
         console.error('할인 생성 중 오류 발생:', error);
       }

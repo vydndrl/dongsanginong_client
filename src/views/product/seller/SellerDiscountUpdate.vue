@@ -90,7 +90,7 @@
     <!-- 완료 메시지 모달 -->
     <v-dialog v-model="alertModal" max-width="260px">
       <v-card class="modal" style="padding: 10px; padding-right: 20px; text-align: center;">
-        <v-card-text>{{ alertMessage }}</v-card-text>
+        <v-card-text style="white-space: pre-line;">{{ alertMessage }}</v-card-text>
         <v-btn @click="closeAlertModal" class="submit-btn">닫기</v-btn>
       </v-card>
     </v-dialog>
@@ -98,7 +98,7 @@
     <!-- 오류 메시지 모달 -->
     <v-dialog v-model="errorModal" max-width="300px">
       <v-card class="modal" style="padding: 10px; padding-right: 20px; text-align: center;">
-        <v-card-text>{{ errorMessage }}</v-card-text>
+        <v-card-text style="white-space: pre-line;">{{ errorMessage }}</v-card-text>
         <v-btn @click="closeErrorModal" class="submit-btn">닫기</v-btn>
       </v-card>
     </v-dialog>
@@ -300,7 +300,7 @@
           this.alertMessage = "할인이 성공적으로 수정되었습니다.";
           this.alertModal = true;
         } catch (error) {
-          this.errorMessage = "상품을 선택하실 수 없습니다.";
+          this.errorMessage = "이미 할인이 적용된\n 상품이 있습니다.";
           this.errorModal = true;
           console.error('할인 수정 중 오류 발생:', error);
         }
