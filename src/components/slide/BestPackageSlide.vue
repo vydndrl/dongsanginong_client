@@ -6,10 +6,6 @@
                 <div class="carousel-item" v-for="(item, index) in items" :key="index">
                     <img :src="item.imageUrl" alt="item image" class="item-img"
                         @click="this.$router.push(`/product/${item.id}`)" />
-                    <v-chip v-if="isNewProduct(item.createdAt)"
-                        style="position: absolute; top: 10px; right: 19px; background-color: rgba(0, 128, 0, 0.8); color: white;">
-                        NEW !
-                    </v-chip>
                     <span style="font-size:medium; font-weight: 400;" v-if="item.packageName.length > 20"> {{
                         item.packageName.substring(0, 10)
                         }}... </span>
@@ -74,13 +70,6 @@ export default {
             setInterval(() => {
                 this.currentSlide = (this.currentSlide + 1) % this.totalPages;  // Move to next page
             }, 5000); // Change slide every 3 seconds
-        },
-        isNewProduct(createdAt) {
-            const createdDate = new Date(createdAt);
-            const currentDate = new Date();
-            const diffTime = Math.abs(currentDate - createdDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            return diffDays <= 7; // 최근 7일 이내 생성된 경우 true 반환
         },
         getAmountWithFormat(amount) {
             let ret = "";
