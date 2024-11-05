@@ -334,7 +334,6 @@
 <script>
 import axios from 'axios';
 import * as PortOne from "@portone/browser-sdk/v2";
-import CouponList from '../coupon/CouponList.vue';
 
 export default {
     watch: {
@@ -470,8 +469,7 @@ export default {
             const allCoupons = couponRes.data;
             console.log("line 470");
             console.log(Date.now());
-            this.availableCoupons = allCoupons.filter(coupon => coupon.useYn === "N" && new Date(coupon.expiration) >= new Date() && coupon.farmId == packageProduct.farmId);
-            console.log(">>>>>coupon.farmId: " + coupon.farmId + " >>>>>packageProduct.farmId: " + packageProduct.farmId);
+            this.availableCoupons = allCoupons.filter(coupon => coupon.useYn === "N" && new Date(coupon.expiration) >= new Date() && coupon.farmId == this.packageProduct.farmId);
             this.couponDiscountRate = Number(couponRes.discountRate) / 100;
             this.couponDiscountedAmount = this.couponDiscountRate * this.packageProduct.price;
 
