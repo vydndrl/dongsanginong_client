@@ -17,12 +17,14 @@
           <!-- 후기에 대한 요약 -->
           <div class="input-section input-summary">
             <label for="summary">어떤 점이 좋았나요?</label>
-            <input type="text" v-model="review.title" id="summary" placeholder="제목을 입력하세요." required class="custom-input" />
+            <input type="text" v-model="review.title" id="summary" placeholder="제목을 입력하세요." required
+              class="custom-input" />
           </div>
 
           <!-- 후기에 대한 내용 -->
           <div class="input-section input-content" style="margin-top: -30px;">
-            <textarea v-model="review.contents" id="content" placeholder="후기 내용을 입력하세요." required class="custom-input" />
+            <textarea v-model="review.contents" id="content" placeholder="후기 내용을 입력하세요." required
+              class="custom-input" />
           </div>
 
           <!-- 이미지 첨부 -->
@@ -74,10 +76,10 @@
 
   <!-- 성공 모달 -->
   <v-dialog v-model="successModal" max-width="260px">
-      <v-card class="modal" style="padding: 15px; text-align: center;">
-          <v-card-text style="text-align: center;">완료되었습니다.</v-card-text>
-          <v-btn @click="closeModals" class="submit-btn" style="margin-top: -2px; margin-right: 10px;">확인</v-btn>
-      </v-card>
+    <v-card class="modal" style="padding: 15px; text-align: center;">
+      <v-card-text style="text-align: center;">완료되었습니다.</v-card-text>
+      <v-btn @click="closeModals" class="submit-btn" style="margin-top: -2px; margin-right: 10px;">확인</v-btn>
+    </v-card>
   </v-dialog>
 
   <!-- 닫기 확인 모달 -->
@@ -214,6 +216,11 @@ export default {
           }
         } else {
           this.successModal = true; // 성공 시 성공 모달 열기
+          this.review.rating = 0;
+          this.review.title = '';
+          this.review.contents = '';
+          this.selectedFiles = [];
+          this.filePreviews = [];
         }
       } catch (error) {
         console.error('리뷰 생성 실패:', error);
