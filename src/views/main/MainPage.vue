@@ -11,7 +11,7 @@
     <br>
     <v-container class="farm-container">
         <div class="text-center info-title" style="border-radius:12px;">
-            동상이농 (同床利農), 같은 상상 서로 다른 이익
+            동상이농 (同床利農), 같은 상상 서로 다른 이익 
         </div>
         <br />
         <div class="text-center info-content">
